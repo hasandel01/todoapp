@@ -25,7 +25,7 @@ public class TaskListController {
         return ResponseEntity.ok(taskListService.getAllTaskLists());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<TaskList>> getTaskListById(@PathVariable long id) {
         return ResponseEntity.ok(taskListService.getTaskListById(id));
     }
