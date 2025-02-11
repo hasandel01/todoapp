@@ -1,0 +1,81 @@
+/* General container styling */
+.add-task-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+.add-task-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input styling */
+input, textarea {
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Error message styling */
+div {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Button styling */
+button {
+    padding: 12px 18px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #45a049;
+}
+
+/* Success/Failure message styling */
+.add-task-message {
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+}
+
+.success {
+    color: green;
+}
+
+.failure {
+    color: red;
+}
