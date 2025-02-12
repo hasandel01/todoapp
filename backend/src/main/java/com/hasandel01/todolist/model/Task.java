@@ -10,11 +10,12 @@ import java.time.LocalDate;
 
 @Data
 @Entity
+@EqualsAndHashCode(exclude = "taskList")
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String title;
 
@@ -23,6 +24,8 @@ public class Task {
     private LocalDate dueDate;
 
     private boolean completed;
+
+    private Priority priority;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_list_id", nullable = false)
