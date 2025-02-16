@@ -4,6 +4,7 @@ package com.hasandel01.todolist.controller;
 import com.hasandel01.todolist.model.Task;
 import com.hasandel01.todolist.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class TaskController {
     }
 
     @PostMapping("/task-list/{id}/task")
-    public ResponseEntity<Task> addTask(@RequestBody Task task, @PathVariable Long id) {
+    public ResponseEntity<Task> addTask(@Valid @RequestBody Task task, @PathVariable Long id) {
         try{
             Task savedTask = this.taskService.addTaskToTheList(id,task);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);

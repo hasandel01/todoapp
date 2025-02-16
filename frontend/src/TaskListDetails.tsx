@@ -7,15 +7,17 @@ interface Task {
   id: number;
   title: string;
   description: string;
-  dueDate: string;
+  dueTime: string;
   completed: boolean;
+  priority: string;
 }
 
 const TaskListDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '', completed: false });
+  const [newTask, setNewTask] = useState({ title: '', description: '', dueTime: '', completed: false, priority: '' });
   const [message, setMessage] = useState('');
+  const [showAddTaskForm, setShowAddTaskForm] = useState(false);
 
   useEffect(() => {
     fetchTasks();
@@ -43,7 +45,7 @@ const TaskListDetails = () => {
       const response = await axiosInstance.post(`/task-list/${id}/task`, newTask);
       setTasks([...tasks, response.data]);
       setMessage('Task added successfully!');
-      setNewTask({ title: '', description: '', dueDate: '', completed: false });
+      setNewTask({ title: '', description: '', dueTime: '', completed: false , priority: '' });
     } catch (error) {
       setMessage('Failed to add task.');
       console.error('Error adding task:', error);
@@ -52,7 +54,7 @@ const TaskListDetails = () => {
 
   const handleDeleteTask = async (taskId: number) => {
     try {
-      await axiosInstance.delete(`/task-list/${id}/task/${taskId}`);
+      await axiosInstance.delete(`/task/${taskId}`);
       setTasks(tasks.filter(task => task.id !== taskId));
       setMessage('Task deleted successfully!');
     } catch (error) {
@@ -61,31 +63,56 @@ const TaskListDetails = () => {
     }
   };
 
-  return (
-    <div className="task-list-details">
-      <h2>Task List Details</h2>
-      {message && <p className={message.includes('successfully') ? 'success' : 'error'}>{message}</p>}
-      <ul>
-        {tasks.map(task => (
-          <li key={task.id}>
-            <span>{task.title} - {task.description} (Due: {task.dueDate})</span>
-            <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-      <h3>Add Task</h3>
-      <form onSubmit={handleAddTask}>
-        <input type="text" placeholder="Title" value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
-        <input type="text" placeholder="Description" value={newTask.description} onChange={(e) => setNewTask({ ...newTask, description: e.target.value })} required />
-        <input type="date" value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} required />
-        <label>
-          Completed:
-          <input type="checkbox" checked={newTask.completed} onChange={(e) => setNewTask({ ...newTask, completed: e.target.checked })} />
-        </label>
-        <button type="submit">Add Task</button>
-      </form>
-    </div>
-  );
-};
+  const toggleAddTaskForm = () => {
+    setShowAddTaskForm(prevState => !prevState);
+  };
+
+return (
+  <div className="task-list-details">
+    <h2></h2>
+    {message && <p className={message.includes('successfully') ? 'success' : 'error'}>{message}</p>}
+    <ul>
+      {tasks.map(task => (
+        <li key={task.id}>
+          <span>{task.title} - {task.description} (Due: {task.dueTime})</span>
+          <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+        </li>
+      ))}
+    </ul>
+    {showAddTaskForm && (<form onSubmit={handleAddTask}>
+      <input
+        type="text"
+        placeholder="Title"
+        value={newTask.title}
+        onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+        required
+      />
+      <input
+        type="text"
+        placeholder="Description"
+        value={newTask.description}
+        onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+        required
+      />
+      <input
+        type="datetime-local"
+        value={newTask.dueTime}
+        onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
+        required
+      />
+      <label>
+        Completed:
+        <input
+          type="checkbox"
+          checked={newTask.completed}
+          onChange={(e) => setNewTask({ ...newTask, completed: e.target.checked })}
+        />
+      </label>
+      <button type="submit" disabled={!newTask.title || !newTask.description || !newTask.dueTime}>Add Task</button>
+    </form>)}
+    <button className='add-task-button' onClick={toggleAddTaskForm}>+</button>
+  </div>
+);
+}
 
 export default TaskListDetails;

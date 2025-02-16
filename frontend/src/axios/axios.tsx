@@ -28,9 +28,9 @@ export const addTask = async (task: any, id: number) => {
   }
 };
 
-export const deleteTask = async (taskListId: number, taskId: number) => {
+export const deleteTask = async (taskId: number) => {
   try {
-    const response = await axiosInstance.delete(`/task-list/${taskListId}/task/${taskId}`);
+    const response = await axiosInstance.delete(`/task/${taskId}`);
     return response.data;
   } catch (error) {
     console.error('Error deleting task:', error);

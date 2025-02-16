@@ -30,9 +30,12 @@ public class TaskService {
     public Task addTaskToTheList(Long taskListId, Task task) {
             TaskList taskList = taskListRepository.findById(taskListId)
                     .orElseThrow(() -> new EntityNotFoundException("Task list does not exist"));
+            if (task.getDueTime() != null && task.getDueTime().getSecond() == 0) {
+                task.setDueTime(task.getDueTime().withSecond(0).withNano(0));
+            }
             task.setTaskList(taskList);
             return taskRepository.save(task);
-        }
+    }
 
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findById(taskId)
@@ -53,7 +56,7 @@ public class TaskService {
 
         task.setTitle(updatedTask.getTitle());
         task.setDescription(updatedTask.getDescription());
-        task.setDueDate(updatedTask.getDueDate());
+        task.setDueTime(updatedTask.getDueTime());
         task.setCompleted(updatedTask.isCompleted());
         task.setPriority(updatedTask.getPriority());
         return taskRepository.save(task);
