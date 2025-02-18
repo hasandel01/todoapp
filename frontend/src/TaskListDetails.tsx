@@ -73,43 +73,64 @@ return (
     {message && <p className={message.includes('successfully') ? 'success' : 'error'}>{message}</p>}
     <ul>
       {tasks.map(task => (
-        <li key={task.id}>
-          <span>{task.title} - {task.description} (Due: {task.dueTime})</span>
-          <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+        <li key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
+          <span className="task-title">{task.title}</span>
+          <span className="task-description">{task.description}</span>
+          <span className="due">(Due: {task.dueTime})</span>
+          <button onClick={() => handleDeleteTask(task.id)} className="delete-button">Delete</button>
         </li>
       ))}
     </ul>
-    {showAddTaskForm && (<form onSubmit={handleAddTask}>
-      <input
-        type="text"
-        placeholder="Title"
-        value={newTask.title}
-        onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Description"
-        value={newTask.description}
-        onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-        required
-      />
-      <input
-        type="datetime-local"
-        value={newTask.dueTime}
-        onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
-        required
-      />
-      <label>
-        Completed:
-        <input
-          type="checkbox"
-          checked={newTask.completed}
-          onChange={(e) => setNewTask({ ...newTask, completed: e.target.checked })}
-        />
-      </label>
-      <button type="submit" disabled={!newTask.title || !newTask.description || !newTask.dueTime}>Add Task</button>
-    </form>)}
+    {showAddTaskForm && (
+      <div className='modal-overlay'>
+        <div className='modal'>
+        <form onSubmit={handleAddTask}>
+          <input
+            type="text"
+            placeholder="Title"
+            value={newTask.title}
+            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={newTask.description}
+            onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+            required
+          />
+          <input
+            type="datetime-local"
+            value={newTask.dueTime}
+            onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
+            required
+          />
+          <label>
+            Priority:
+            <select
+              value={newTask.priority}
+              onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+            >
+              <option value="">Select Priority</option>
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+            </select>
+          </label>
+          <label>
+            Completed:
+            <input
+              type="checkbox"
+              checked={newTask.completed}
+              onChange={(e) => setNewTask({ ...newTask, completed: e.target.checked })}
+            />
+          </label>
+          <button type="submit" disabled={!newTask.title || !newTask.description || !newTask.dueTime}>Add Task</button>
+          <button type="button" onClick={() =>setShowAddTaskForm(false)}>Cancel</button>
+    </form>
+    </div>
+    </div>
+    )}
     <button className='add-task-button' onClick={toggleAddTaskForm}>+</button>
   </div>
 );

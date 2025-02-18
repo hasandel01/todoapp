@@ -173,3 +173,187 @@
 .add-task-button:focus {
     outline: none;
 }   
+
+/* Task List */
+.task-list-details ul.blurred {
+  filter: blur(5px);
+  pointer-events: none; /* Prevent interaction with task list when modal is open */
+}
+
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  position: relative;
+}
+
+.modal form input,
+.modal form button {
+  margin-bottom: 15px;
+}
+
+.modal form button[type="button"] {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal form button[type="button"]:hover {
+  background-color: #c82333;
+}
+
+
+.priority-label {
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+  text-transform: capitalize;
+}
+
+
+.completed-true {
+  opacity: 0.5;
+  color: #888;
+  text-decoration: line-through;
+}
+
+
+.task-title {
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+  flex-grow: 1;
+}
+
+/* Style each task item */
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* Ghost style for completed tasks */
+.task-item.completed {
+  opacity: 0.5; /* Faded look */
+  color: #888;  /* Light gray text */
+  text-decoration: line-through; /* Strikethrough text */
+  background-color: #f0f0f0; /* Light background */
+}
+
+/* Base styles for task list container */
+.task-list-details {
+  padding: 20px;
+  background-color: #f4f7fa;
+  border-radius: 8px;
+}
+
+/* Style each task item */
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+/* Ghost style for completed tasks */
+.task-item.completed {
+  opacity: 0.5; /* Faded look */
+  color: #888;  /* Light gray text */
+  text-decoration: line-through; /* Strikethrough text */
+  background-color: #f0f0f0; /* Light background */
+}
+
+/* Title styling */
+.task-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  flex-grow: 1;
+}
+
+/* Description styling */
+.task-description {
+  color: #555;
+  flex-grow: 2;
+  margin-left: 8px;
+}
+
+/* Due time styling */
+.due {
+  font-size: 0.9rem;
+  color: #777;
+  margin-left: 8px;
+}
+
+/* Styling for the delete button */
+.delete-button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  background-color: #e53e3e;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #c53030;
+}
+
+/* Adding hover effect for tasks */
+.task-item:hover {
+  background-color: #f9fafb;
+}
+
+/* Responsiveness: Stack the elements vertically on smaller screens */
+@media (max-width: 600px) {
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-description {
+    margin-left: 0;
+  }
+
+  .due {
+    margin-top: 5px;
+  }
+
+  .delete-button {
+    margin-top: 10px;
+    align-self: flex-start;
+  }
+}
