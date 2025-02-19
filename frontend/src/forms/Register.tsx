@@ -1,87 +1,81 @@
-import { useEffect, useState } from "react"
-import axiosInstance from "../axios/axios";
-import { useFormik } from "formik";
-import * as Yup from 'yup';
-
-interface User {
-    username: string,
-    password: string
-}
-
+import { useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 const Register = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
-    const [user, setUser] = useState<User>({username: '', password: ''});
+  // Handle the form submission
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
+    // Create the user object
+    const user = {
+      username,
+      password,
+      email,
+    };
 
-    const formik = useFormik({
-        initialValues: {
-            username: '',
-            password: ''
-        },
-        validationSchema: Yup.object({
-            username: Yup.string().required('Username is required'),
-            password: Yup.string().required('Password is required')
-        }),
-        onSubmit: async (values) => {
-            try {
-                const response = await axiosInstance.post('/login', values);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error logging in:', error);
-            }
-        }
-    });
+    try {
+      // Send the POST request to register the user
+      const response = await axios.post('http://localhost:8080/auth/register', user);
 
-    useEffect(() => {
+      // Assuming the response contains the JWT token
+      const { token } = response.data;
 
-        const fetchLoginPage = async () => {
-            try {
-                const response = await axiosInstance.get('/login');
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching login page:', error);
-            }
-        }
+      // Store the JWT token in localStorage (or sessionStorage)
+      localStorage.setItem('jwtToken', token);
 
-        fetchLoginPage();
-    
-    }, []);
+      setMessage('Registration successful!');
 
+      navigate('/login');
 
-    return <div>
-                <form onSubmit={formik.handleSubmit}>
-                    <div>
-                        <label htmlFor="username">Username</label>
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            onChange={formik.handleChange}
-                            value={formik.values.username}
-                        />
-                        {formik.touched.username && formik.errors.username ? (
-                            <div>{formik.errors.username}</div>
-                        ) : null}
-                    </div>
+    } catch (error) {
+      console.error('Error during registration', error);
+      setMessage('Error during registration.');
+    }
+  };
 
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            onChange={formik.handleChange}
-                            value={formik.values.password}
-                        />
-                        {formik.touched.password && formik.errors.password ? (
-                            <div>{formik.errors.password}</div>
-                        ) : null}
-                    </div>
-
-                    <button type="submit">Login</button>
-                </form>
+  return (
+    <div className='register-form'>
+      <h2>Sign Up to ToDo!</h2>
+      <form onSubmit={handleRegister}>
+        <div className='form-group'>
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
-
-}
+        <div className='form-group'>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className='form-group'>
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <Link to={"/login"}> Are you already an user? Sign In!</Link>
+        <button type="submit">Create an Account</button>
+      </form>
+      {message && <p>{message}</p>}
+    </div>
+  );
+};
 
 export default Register;

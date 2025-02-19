@@ -1,87 +1,93 @@
-import { useEffect, useState } from "react"
-import axiosInstance from "../axios/axios";
-import { useFormik } from "formik";
-import * as Yup from 'yup';
-
-interface User {
-    username: string,
-    password: string
-}
+import { useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom'; 
+import '../css/Login.css';
 
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [usernameValid, setUsernameValid] = useState(false);
 
-    const [user, setUser] = useState<User>({username: '', password: ''});
+  const handleUsernameSubmit = async (e) => {
+    e.preventDefault();
 
+    try {
 
-    const formik = useFormik({
-        initialValues: {
-            username: '',
-            password: ''
-        },
-        validationSchema: Yup.object({
-            username: Yup.string().required('Username is required'),
-            password: Yup.string().required('Password is required')
-        }),
-        onSubmit: async (values) => {
-            try {
-                const response = await axiosInstance.post('/login', values);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error logging in:', error);
-            }
-        }
-    });
+      const response = await axios.post('http://localhost:8080/auth/check-user', {username});
 
-    useEffect(() => {
+      if(response.data.username === username)
+        setUsernameValid(true);
+      
+      
+    } catch (error) {
+      console.error('Error checking username', error);
+      setErrorMessage('No user found with that username');
+    }
+  };
 
-        const fetchLoginPage = async () => {
-            try {
-                const response = await axiosInstance.get('/login');
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching login page:', error);
-            }
-        }
-
-        fetchLoginPage();
-    
-    }, []);
-
-
-    return <div>
-                <form onSubmit={formik.handleSubmit}>
-                    <div>
-                        <label htmlFor="username">Username</label>
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            onChange={formik.handleChange}
-                            value={formik.values.username}
-                        />
-                        {formik.touched.username && formik.errors.username ? (
-                            <div>{formik.errors.username}</div>
-                        ) : null}
-                    </div>
-
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            onChange={formik.handleChange}
-                            value={formik.values.password}
-                        />
-                        {formik.touched.password && formik.errors.password ? (
-                            <div>{formik.errors.password}</div>
-                        ) : null}
-                    </div>
-
-                    <button type="submit">Login</button>
-                </form>
+  return (
+    <div className="login-form">
+      <h2>Sign In to ToDo!</h2>
+      { !usernameValid ? (
+        <form onSubmit={handleUsernameSubmit}>
+        <div className="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
+         <Link to={"/register"}> Aren't you a user? Sign Up!</Link>
+        <button type="submit">Next</button>
+      </form>
+    ) : ( 
+      <PasswordForm username={username} /> ) }
+    </div>
+  );
+};
 
-}
+
+const PasswordForm = ({ username }: { username: string }) => {
+
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const navigate = useNavigate();
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      const response = await axios.post('http://localhost:8080/auth/authenticate', {username: username, password: password});
+
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+
+      navigate('/');      
+    }
+    catch (error) {
+      console.error('Error checking password', error);
+      setErrorMessage('Incorrect password');
+    }
+  };
+
+
+    return (
+      <form onSubmit={handlePasswordSubmit}>
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Sign in </button>
+      </form>
+    );
+};
 
 export default Login;

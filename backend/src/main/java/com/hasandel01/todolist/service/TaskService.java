@@ -6,7 +6,6 @@ import com.hasandel01.todolist.model.TaskList;
 import com.hasandel01.todolist.repository.TaskListRepository;
 import com.hasandel01.todolist.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

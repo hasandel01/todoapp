@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axiosInstance from './axios/axios';
-import './css/TaskListDetails.css';
+import axiosInstance from '../axios/axios';
+import '../css/TaskListDetails.css';
 
 interface Task {
   id: number;
@@ -12,8 +12,7 @@ interface Task {
   priority: string;
 }
 
-const TaskListDetails = () => {
-  const { id } = useParams<{ id: string }>();
+const TaskListDetails = ({id} :{ id: number}) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState({ title: '', description: '', dueTime: '', completed: false, priority: '' });
   const [message, setMessage] = useState('');
