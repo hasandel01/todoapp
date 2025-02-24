@@ -55,7 +55,7 @@ Before you begin, make sure you have the following installed:
     - Example for MySQL:
       ```properties
       spring.datasource.url=jdbc:mysql://localhost:3306/todolist
-      spring.datasource.username=root
+      spring.datasource.username= 
       spring.datasource.password=password
       ```
 

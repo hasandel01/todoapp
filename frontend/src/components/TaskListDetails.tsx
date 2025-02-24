@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axiosInstance from '../axios/axios';
 import '../css/TaskListDetails.css';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FormatDate } from '../tools/FormatDate';
 
 interface Task {
   id: number;
@@ -12,29 +14,40 @@ interface Task {
   priority: string;
 }
 
-const TaskListDetails = ({id} :{ id: number}) => {
+interface TaskListDetailsProps {
+  id: number
+  onHandleDeleteTaskList: () => void;
+  onUpdateTaskList: (id: number, title: string) => void;
+}
+
+const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTaskList, onUpdateTaskList}) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState({ title: '', description: '', dueTime: '', completed: false, priority: '' });
   const [message, setMessage] = useState('');
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
+  const [title, setTitle] = useState('');
+  const [error, setError] = useState('');
+  const [editedTitle, setEditedTitle] = useState<string>('');
+  const [editingTaskListId, setEditingTaskListId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [id, editingTaskListId]);
 
   const fetchTasks = async () => {
     try {
       const response = await axiosInstance.get(`/task-list/${id}`);
-      console.log("API Response:", response.data); // Debugging to check structure
+      console.log("API Response:", response.data); 
   
       if (response.data && Array.isArray(response.data.tasks)) {
-        setTasks(response.data.tasks); // Extract tasks properly
+        setTitle(response.data.title);
+        setTasks(response.data.tasks); 
       } else {
-        setTasks([]); // Ensure tasks is always an array
+        setTasks([]);
       }
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      setTasks([]); // Set as empty array in case of failure
+      setTasks([]);
     }
   };
   
@@ -66,17 +79,86 @@ const TaskListDetails = ({id} :{ id: number}) => {
     setShowAddTaskForm(prevState => !prevState);
   };
 
+
+  const handleDeleteTaskList = async () => {
+    
+    if (!title.trim()) return; 
+
+    try {
+      const response = await axiosInstance.delete('/task-list/delete', {
+        data: { title }
+      });
+      onHandleDeleteTaskList();
+      console.log('Task list deleted:', response.data);
+    }
+    catch(error) {
+      console.error('Failed to delete task list:', error);
+      setError("Failed to delete task list.");
+    }
+  
+  };
+
+  
+  const handleEditedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const handleEditStart = (id: number, title: string) => {
+    setEditingTaskListId(id);
+    setEditedTitle(title);
+  };
+  
+const handleEditSubmit = async () => {
+
+  if (editingTaskListId === null) return;
+
+  try {
+      const response = await axiosInstance.put(`/task-list/edit/${editingTaskListId}`, {
+        title: editedTitle
+      });
+      onUpdateTaskList(editingTaskListId, editedTitle);
+      setEditingTaskListId(null);
+      console.log('Task list edited:', response.data);
+    }
+    catch(error) {
+      console.error('Failed to edit task list:', error);
+      setError("Failed to edit task list.");
+    }
+
+};
+
+
 return (
   <div className="task-list-details">
-    <h2></h2>
+    <div className="task-list-header">
+    {editingTaskListId === id ? (
+                  <input 
+                    type="text" 
+                    value={editedTitle} 
+                    onChange={handleEditedChange} 
+                    onBlur={handleEditSubmit}
+                    onKeyDown={(e) => e.key === 'Enter' && handleEditSubmit()}
+                    autoFocus
+                  />
+                ) : (
+                  <span onClick={() => handleEditStart(id, title)}>
+                    {title}
+                  </span>
+                )}
+      {<FontAwesomeIcon className="logout-icon" icon={faTrash} onClick={() => handleDeleteTaskList()}></FontAwesomeIcon>}
+      </div>
     {message && <p className={message.includes('successfully') ? 'success' : 'error'}>{message}</p>}
     <ul>
       {tasks.map(task => (
         <li key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
-          <span className="task-title">{task.title}</span>
-          <span className="task-description">{task.description}</span>
-          <span className="due">(Due: {task.dueTime})</span>
-          <button onClick={() => handleDeleteTask(task.id)} className="delete-button">Delete</button>
+          <div className='task-content'>
+            <span className="task-title">{task.title}</span>
+            <span className="task-description">{task.description}</span>
+          </div>
+          <span className="due">{FormatDate(task.dueTime)}</span>
+          <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
+            <FontAwesomeIcon className= "trash-icon" icon={faTrash}/>
+            </button>
         </li>
       ))}
     </ul>
