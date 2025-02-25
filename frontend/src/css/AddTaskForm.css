@@ -1,0 +1,49 @@
+  .modal-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal {
+    background: aliceblue;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal input, 
+  .modal select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .modal button {
+    width: 50%;
+    padding: 5px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .modal button[type="submit"] {
+    background: rgb(31, 150, 254);
+    color: white;
+  }
+  
+
+  .radio-group label{
+    display: inline-block;
+    margin-right: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 30px;
+  }

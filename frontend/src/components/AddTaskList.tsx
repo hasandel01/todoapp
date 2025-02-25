@@ -7,7 +7,7 @@ interface AddTaskListProps {
     onAddTaskListSuccess : () => void;
 }
 
-const AddTaskList = ( {onAddTaskListSuccess}: AddTaskListProps) => {
+const AddTaskList: React.FC<AddTaskListProps> = ( {onAddTaskListSuccess}) => {
 
     const [taskList, setTaskList] = useState<{ id: number; title: string }[]>([]);
     const [error, setError] = useState('');
@@ -20,10 +20,12 @@ const AddTaskList = ( {onAddTaskListSuccess}: AddTaskListProps) => {
     
         try {
 
-            const response = await axiosInstance.post('/task-list/add', { title });
-                console.log('Task list added:', response.data);
+            const response = await axiosInstance.post(`/task-list/add`, { title });
+            
+            console.log('Task list added:', response.data);
             setTaskList(prevList => [...prevList, response.data]);
             onAddTaskListSuccess();
+            setTitle('');
         } catch (err) {
             console.error('Failed to add task list:', err);
             setError("Failed to add task list.");
@@ -39,15 +41,16 @@ const AddTaskList = ( {onAddTaskListSuccess}: AddTaskListProps) => {
         }
         else if(e.key === 'Escape') {
             setShowTitle(false);
+            setTitle('');
         }
     }
 
     return (
         <div className="add-task-list">
-            <button type="submit" className="add-task-list-button" onClick={() => setShowTitle(true)}>Add a New Task List</button>
+            <button type="button" className="add-task-list-button" onClick={() => setShowTitle(true)}>Create a new list</button>
             {showTitle && (
-                <div className="modal">
-                    <div className="model-content">
+                <div className="modal-overlay" onClick={() => setShowTitle(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <input 
                         type="text" 
                         autoFocus
@@ -59,8 +62,8 @@ const AddTaskList = ( {onAddTaskListSuccess}: AddTaskListProps) => {
                     </div>
                 </div>
             )}
-            </div>  
-            );
+        </div>  
+    );
 };
 
 export default AddTaskList;

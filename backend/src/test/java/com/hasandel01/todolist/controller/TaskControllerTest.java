@@ -129,16 +129,16 @@ class TaskControllerTest {
         updatedTask.setCompleted(true);
         updatedTask.setPriority(Priority.MEDIUM);
 
-        when(taskService.updateATask(1L,1L,task)).thenReturn(updatedTask);
+        when(taskService.updateATask(1L,task)).thenReturn(updatedTask);
 
-        mockMvc.perform(put("task-list/{taskListId}/task/{taskId}", 1L, 1L)
+        mockMvc.perform(put("/task/{taskId}",  1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedTask)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Test updated"))
                 .andExpect(jsonPath("$.id").value(1L));
 
-        verify(taskService).updateATask(1L,1L,task);
+        verify(taskService).updateATask(1L,task);
     }
 
 

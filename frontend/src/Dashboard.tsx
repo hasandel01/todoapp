@@ -10,7 +10,7 @@ import {faSignOutAlt, faTrash} from '@fortawesome/free-solid-svg-icons';
 const Dashboard = () => {
 
   const [taskLists, setTaskLists] = useState<{ id: number; title: string }[]>([]);
-  const [user, setUser] = useState<{ username: string } | null>(null);
+  const [user, setUser] = useState<{ username: string, email: string} | null>(null);
   const [error, setError] = useState('');
   const [selectedTaskListId, setSelectedTaskListId] = useState<number | null>(null);
   const [addTaskListSuccess, setAddTaskListSuccess] = useState(false);
@@ -20,8 +20,12 @@ const Dashboard = () => {
 
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
+
+        const userResponse = await axiosInstance.get('/auth/me');
+        setUser(userResponse.data);
 
         const taskListResponse = await axiosInstance.get('/task-list');
         setTaskLists(taskListResponse.data);
@@ -29,7 +33,7 @@ const Dashboard = () => {
         let fetchedTaskList = taskListResponse.data;
 
         if(fetchedTaskList.length === 0) {
-          const defaultTaskList = await axiosInstance.post('/task-list/add', {
+          const defaultTaskList = await axiosInstance.post(`/task-list/add`, {
             title: 'My Tasks' 
           });
           setTaskLists(prevTaskLists => [...prevTaskLists, defaultTaskList.data]);
@@ -37,8 +41,7 @@ const Dashboard = () => {
           handleAddTaskListSuccess();
         }
 
-        const userResponse = await axiosInstance.get('/auth/me');
-        setUser(userResponse.data);
+
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data.');

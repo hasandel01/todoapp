@@ -1,7 +1,6 @@
 package com.hasandel01.todolist.model;
 
-
-import com.hasandel01.todolist.token.Token;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,13 +28,15 @@ public class User implements UserDetails{
 
     private String password;
 
+    @Column(unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonManagedReference
+    private List<TaskList> taskLists;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

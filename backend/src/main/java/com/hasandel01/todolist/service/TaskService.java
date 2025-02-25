@@ -45,10 +45,7 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    public Task updateATask(Long taskListId, Long taskId, Task updatedTask) {
-
-        if(!taskListRepository.existsById(taskListId))
-                throw new RuntimeException("TaskList does not exist");
+    public Task updateATask(Long taskId, Task updatedTask) {
 
         Task task = taskRepository.findById(taskId)
                         .orElseThrow(() -> new RuntimeException("Task does not exist"));

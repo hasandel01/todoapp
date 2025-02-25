@@ -4,6 +4,11 @@ import '../css/TaskListDetails.css';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FormatDate } from '../tools/FormatDate';
+import AddTaskForm from './AddTaskForm';
+import EditTaskForm from './EditTaskForm';
+import '../css/ToggleButton.css';
+import { FaEllipsisV } from "react-icons/fa";
+
 
 interface Task {
   id: number;
@@ -29,16 +34,18 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
   const [error, setError] = useState('');
   const [editedTitle, setEditedTitle] = useState<string>('');
   const [editingTaskListId, setEditingTaskListId] = useState<number | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+
 
   useEffect(() => {
     fetchTasks();
-  }, [id, editingTaskListId]);
+  }, [id, editingTaskListId, newTask, editingTaskId]);
 
   const fetchTasks = async () => {
     try {
-      const response = await axiosInstance.get(`/task-list/${id}`);
-      console.log("API Response:", response.data); 
-  
+      const response = await axiosInstance.get(`/task-list/${id}`);  
       if (response.data && Array.isArray(response.data.tasks)) {
         setTitle(response.data.title);
         setTasks(response.data.tasks); 
@@ -51,22 +58,9 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
     }
   };
   
-  const handleAddTask = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      const response = await axiosInstance.post(`/task-list/${id}/task`, newTask);
-      setTasks([...tasks, response.data]);
-      setMessage('Task added successfully!');
-      setNewTask({ title: '', description: '', dueTime: '', completed: false , priority: '' });
-    } catch (error) {
-      setMessage('Failed to add task.');
-      console.error('Error adding task:', error);
-    }
-  };
-
   const handleDeleteTask = async (taskId: number) => {
     try {
-      await axiosInstance.delete(`/task/${taskId}`);
+      await axiosInstance.delete(`/delete/${taskId}`);
       setTasks(tasks.filter(task => task.id !== taskId));
       setMessage('Task deleted successfully!');
     } catch (error) {
@@ -80,13 +74,12 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
   };
 
 
-  const handleDeleteTaskList = async () => {
+  const handleDeleteTaskList = async (id: number) => {
     
-    if (!title.trim()) return; 
-
+  
     try {
       const response = await axiosInstance.delete('/task-list/delete', {
-        data: { title }
+        data: { id }
       });
       onHandleDeleteTaskList();
       console.log('Task list deleted:', response.data);
@@ -98,6 +91,14 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
   
   };
 
+  const handleAddTask = async (newlyTask: Task) => {
+    try {
+      setTasks([...tasks, newlyTask]);
+      setNewTask(newlyTask);
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
+  };
   
   const handleEditedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedTitle(e.target.value);
@@ -107,6 +108,10 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
     setEditingTaskListId(id);
     setEditedTitle(title);
   };
+
+  const toggleShowCompleted = () => {
+    setShowCompleted(prevState => !prevState);
+  }
   
 const handleEditSubmit = async () => {
 
@@ -128,6 +133,17 @@ const handleEditSubmit = async () => {
 };
 
 
+const handleEditTask = (id: number) => {
+  setEditingTaskId(id);
+};
+
+  // Toggle menu visibility
+  const toggleMenu = () => {
+    setShowMenu((prevState) => !prevState);
+  };
+const filteredTasks = tasks.filter(
+  (task) => showCompleted || !task.completed);
+
 return (
   <div className="task-list-details">
     <div className="task-list-header">
@@ -141,77 +157,67 @@ return (
                     autoFocus
                   />
                 ) : (
-                  <span onClick={() => handleEditStart(id, title)}>
+                  <span className="title" onClick={() => handleEditStart(id, title)}>
                     {title}
                   </span>
                 )}
-      {<FontAwesomeIcon className="logout-icon" icon={faTrash} onClick={() => handleDeleteTaskList()}></FontAwesomeIcon>}
+
+      <div className="toggle-container">
+        <label className="toggle-switch">
+          <input
+            type="checkbox"
+            checked={showCompleted}
+            onChange={toggleShowCompleted}
+          />
+          <span className="slider"></span>
+        </label>
+        <span className="toggle-label">Show Completed</span>
+      </div>
+      <div>
+      {<FaEllipsisV 
+      onClick={toggleMenu}
+      style={{
+        cursor: "pointer",
+        fontSize: "20px",
+        marginLeft: "10px",
+      }}></FaEllipsisV>}
+      {showMenu && (
+                <div className="dropdown-menu">
+                  <ul>
+                    <li className="dropdown-menu-element" onClick={() => handleDeleteTaskList(id)}>Delete List</li>
+                  </ul>
+                </div>
+              )}
+            </div>
       </div>
     {message && <p className={message.includes('successfully') ? 'success' : 'error'}>{message}</p>}
     <ul>
-      {tasks.map(task => (
+      {filteredTasks.map(task => (
         <li key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
-          <div className='task-content'>
-            <span className="task-title">{task.title}</span>
-            <span className="task-description">{task.description}</span>
-          </div>
-          <span className="due">{FormatDate(task.dueTime)}</span>
-          <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
-            <FontAwesomeIcon className= "trash-icon" icon={faTrash}/>
+            <div className='task-content' onClick={() => handleEditTask(task.id)}>
+            {editingTaskId === task.id && 
+                    <EditTaskForm
+                      taskId={task.id}
+                      initialTitle={task.title}
+                      initialDescription={task.description}
+                      initialDueTime={task.dueTime}
+                      initialCompleted={task.completed}
+                      initialPriority={task.priority}
+                      onEditComplete={() => setEditingTaskId(null)} 
+                    /> }
+              <span className="task-title">{task.title}</span>
+              <span className="task-description">{task.description}</span>
+            </div>
+            <span className="due">{FormatDate(task.dueTime)}</span>
+            <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
+              <FontAwesomeIcon className= "trash-icon" icon={faTrash}/>
             </button>
         </li>
       ))}
     </ul>
-    {showAddTaskForm && (
-      <div className='modal-overlay'>
-        <div className='modal'>
-        <form onSubmit={handleAddTask}>
-          <input
-            type="text"
-            placeholder="Title"
-            value={newTask.title}
-            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Description"
-            value={newTask.description}
-            onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-            required
-          />
-          <input
-            type="datetime-local"
-            value={newTask.dueTime}
-            onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
-            required
-          />
-          <label>
-            Priority:
-            <select
-              value={newTask.priority}
-              onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-            >
-              <option value="">Select Priority</option>
-              <option value="LOW">Low</option>
-              <option value="MEDIUM">Medium</option>
-              <option value="HIGH">High</option>
-            </select>
-          </label>
-          <label>
-            Completed:
-            <input
-              type="checkbox"
-              checked={newTask.completed}
-              onChange={(e) => setNewTask({ ...newTask, completed: e.target.checked })}
-            />
-          </label>
-          <button type="submit" disabled={!newTask.title || !newTask.description || !newTask.dueTime}>Add Task</button>
-          <button type="button" onClick={() =>setShowAddTaskForm(false)}>Cancel</button>
-    </form>
-    </div>
-    </div>
-    )}
+    {showAddTaskForm && ( <AddTaskForm setShowAddTaskForm={setShowAddTaskForm} 
+                                      onHandleAddTask={handleAddTask} 
+                                      taskListId={id} /> )}
     <button className='add-task-button' onClick={toggleAddTaskForm}>+</button>
   </div>
 );

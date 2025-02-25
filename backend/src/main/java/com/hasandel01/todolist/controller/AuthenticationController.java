@@ -1,7 +1,7 @@
 package com.hasandel01.todolist.controller;
 
 
-import com.hasandel01.todolist.UserDTO;
+import com.hasandel01.todolist.dto.UserDTO;
 import com.hasandel01.todolist.auth.model.AuthenticationRequest;
 import com.hasandel01.todolist.auth.model.AuthenticationResponse;
 import com.hasandel01.todolist.auth.model.RegisterRequest;
@@ -10,13 +10,11 @@ import com.hasandel01.todolist.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("auth")

@@ -36,14 +36,15 @@ public class TaskListController {
 
     @PostMapping("/add")
     public ResponseEntity<TaskList> addTaskList(@RequestBody Map<String,String> payload) {
-        TaskList savedTaskList = this.taskListService.createTaskList(payload.get("title"));
+        TaskList savedTaskList = this.taskListService
+                        .createTaskList(payload.get("title"));
         return ResponseEntity.ok(savedTaskList);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteTaskList(@RequestBody Map<String,String> payload) {
+    public ResponseEntity<Void> deleteTaskList(@RequestBody Map<String,Long> payload) {
         try {
-            this.taskListService.deleteTaskListByTitle(payload.get("title"));
+            this.taskListService.deleteTaskListByTitle(payload.get("id"));
             return ResponseEntity.noContent().build();
         }
         catch (EntityNotFoundException e) {

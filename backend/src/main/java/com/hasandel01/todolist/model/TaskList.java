@@ -1,6 +1,7 @@
 package com.hasandel01.todolist.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -25,4 +26,10 @@ public class TaskList {
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Task> tasks;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
+    private User user;
+
 }

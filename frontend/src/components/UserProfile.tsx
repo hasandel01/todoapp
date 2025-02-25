@@ -25,7 +25,6 @@ const UserProfile = () => {
   return (
     <div>
       <h2>User Profile</h2>
-      <p><strong>ID:</strong> {user.id}</p>
       <p><strong>Username:</strong> {user.username}</p>
       <p><strong>Email:</strong> {user.email}</p>
     </div>

@@ -37,7 +37,7 @@ public class TaskController {
         }
     }
 
-    @DeleteMapping("task/{taskId}")
+    @DeleteMapping("/delete/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
         try{
             this.taskService.deleteTask(taskId);
@@ -49,11 +49,10 @@ public class TaskController {
         }
     }
 
-    @PutMapping("/task-list/{taskListId}/task/{taskId}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long taskListId,
-                                           @PathVariable Long taskId, @RequestBody Task task) {
+    @PutMapping("/edit/{taskId}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody Task task) {
 
-        Task updatedTask = this.taskService.updateATask(taskListId,taskId,task);
+        Task updatedTask = this.taskService.updateATask(taskId,task);
         return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
     }
 
