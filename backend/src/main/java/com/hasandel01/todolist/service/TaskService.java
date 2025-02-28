@@ -88,7 +88,6 @@ public class TaskService {
         newTask.setPriority(task.getPriority());
         newTask.setRecurrencePattern(task.getRecurrencePattern());
         newTask.setRecurring(true);
-        newTask.setPreviousTask(task);
         newTask.setTaskList(task.getTaskList());
 
         return newTask;

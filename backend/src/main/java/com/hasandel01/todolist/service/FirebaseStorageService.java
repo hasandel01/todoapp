@@ -36,7 +36,7 @@ public class FirebaseStorageService {
 
     private Storage initializeFirebase() {
         try {
-            ClassPathResource resource = new ClassPathResource("todoapplication-ef2d3-firebase-adminsdk-fbsvc-8c46fc68da.json");
+            ClassPathResource resource = new ClassPathResource("todoapplication-ef2d3-firebase-adminsdk-fbsvc-50d2c7e4d2.json");
             GoogleCredentials credentials = GoogleCredentials.fromStream(resource.getInputStream());
 
             FirebaseOptions options = new FirebaseOptions.Builder()

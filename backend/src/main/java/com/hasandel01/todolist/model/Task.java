@@ -45,16 +45,6 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private RecurrencePattern recurrencePattern;
 
-    @ManyToOne
-    @JsonBackReference("task-previous")
-    @JoinColumn(name = "previous_task_id")
-    private Task previousTask;
-
-    @OneToMany(mappedBy = "previousTask", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("task-previous")
-    private List<Task> tasks;
-
-
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_list_id", nullable = false)
     @JsonBackReference 
