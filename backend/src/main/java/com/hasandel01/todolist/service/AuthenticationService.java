@@ -14,6 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -27,10 +30,19 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
+
+        String bucketName = "todoapplication-ef2d3.firebasestorage.app";
+        String downloadToken = java.util.UUID.randomUUID().toString();
+
+        String publicUrl = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/"
+                + URLEncoder.encode("default_profile_picture.png", StandardCharsets.UTF_8)
+                + "?alt=media&token=" + downloadToken;
+
         var user = User.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
+                .profilePictureUrl(publicUrl)
                 .role(Role.USER)
                 .build();
 

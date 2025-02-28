@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Login from "./forms/Login";
 import Register from "./forms/Register";
-import UserProfile from "./components/UserProfile";
+import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
 
@@ -13,12 +13,11 @@ const App = () => {
                 {/* Public routes */}
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 {/* Default routes */}
                 <Route path="/" element={<Dashboard />} />
 
-                {/* Protected routes */}
-                <Route path="/profile" element={<UserProfile />} />
             </Routes>
         </Router>
     );

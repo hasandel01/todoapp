@@ -2,6 +2,7 @@ package com.hasandel01.todolist.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.*;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Data
@@ -38,10 +40,24 @@ public class Task {
     @Column(nullable = false)
     private Priority priority;
 
+    private boolean isRecurring;
+
+    @Enumerated(EnumType.STRING)
+    private RecurrencePattern recurrencePattern;
+
+    @ManyToOne
+    @JsonBackReference("task-previous")
+    @JoinColumn(name = "previous_task_id")
+    private Task previousTask;
+
+    @OneToMany(mappedBy = "previousTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("task-previous")
+    private List<Task> tasks;
+
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_list_id", nullable = false)
     @JsonBackReference 
     private TaskList taskList;
-
 
 }

@@ -1,30 +1,32 @@
-  .modal-overlay {
-    position: fixed;
+  .form-title {
+    background: white;
+    padding: 5px;
+    border-radius: 5px;
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal {
-    background: aliceblue;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .modal input, 
-  .modal select {
+  .form-title input {
     width: 100%;
-    padding: 8px;
+    padding: 5px;
     margin: 5px 0;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 5px;
   }
-  
+
+  .form-title input:focus {
+    outline: none;
+
+  }
+
+  .additional-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-right: 10px;
+  }
+
   .modal button {
     width: 50%;
     padding: 5px;
@@ -35,7 +37,7 @@
   }
   
   .modal button[type="submit"] {
-    background: rgb(31, 150, 254);
+    background: var(--primary-color);
     color: white;
   }
   
@@ -45,5 +47,93 @@
     margin-right: 10px;
     justify-content: center;
     align-items: center;
-    margin-left: 30px;
+    margin-left: 20px;
   }
+
+  .disabled-btn {
+    background: #ccc;
+    color: #fff;
+    cursor: not-allowed;
+  }
+
+  .disabled-btn:hover {
+    background: #ccc;
+    color: #fff;
+  }
+
+
+.priority-button,
+.repeat-task-icon {
+  display: inline-block;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: var(--background-color);
+  cursor: pointer;
+  font-size: 24px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.priority-button:hover,
+.repeat-task-icon:hover {
+  background-color: var(--background-color-dark);
+}
+
+.priority-menu {
+  position: relative;
+  background-color: var(--background-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 150px;
+  z-index: 10;
+}
+
+.priority-menu ul {
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.priority-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.priority-menu li:hover {
+  background-color: #f1f1f1;
+}
+
+.recurring-options {
+  position: relative;
+  background-color: var(--background-color);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.recurring-options ul {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.recurring-options ul li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.recurring-options ul li:hover {
+  background-color: var(--background-color-dark);
+}
+
+.show-recurring .recurring-options {
+  display: block;
+}
+
+.show-priority .priority-options {
+  display: block;
+}

@@ -56,4 +56,10 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
     }
 
+    @PutMapping("/complete/{taskId}")
+    public ResponseEntity<Task> completeTask(@PathVariable Long taskId) {
+        Task completedTask = this.taskService.completeATask(taskId);
+        return ResponseEntity.ok(completedTask);
+    }
+
 }

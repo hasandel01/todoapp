@@ -2,7 +2,6 @@ import { useState } from "react"
 import axiosInstance from "../axios/axios"
 import '../css/AddTaskList.css'
 
-
 interface AddTaskListProps {
     onAddTaskListSuccess : () => void;
 }
@@ -47,7 +46,7 @@ const AddTaskList: React.FC<AddTaskListProps> = ( {onAddTaskListSuccess}) => {
 
     return (
         <div className="add-task-list">
-            <button type="button" className="add-task-list-button" onClick={() => setShowTitle(true)}>Create a new list</button>
+            <label className="add-task-list-label" onClick={() => setShowTitle(true)}>Create a new list</label>
             {showTitle && (
                 <div className="modal-overlay" onClick={() => setShowTitle(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>

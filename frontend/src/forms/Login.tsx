@@ -21,13 +21,14 @@ const Login = () => {
       
     } catch (error) {
       console.error('Error checking username', error);
-      setErrorMessage('No user found with that username');
+      setErrorMessage('User not found. Please register.');
     }
   };
 
   return (
     <div className="login-form">
-      <h2>Sign In to ToDo!</h2>
+      <h1>Sign In to ToDo!</h1>
+      {errorMessage && <p>{errorMessage}</p>}
       { !usernameValid ? (
         <form onSubmit={handleUsernameSubmit}>
         <div className="form-group">
@@ -76,6 +77,7 @@ const PasswordForm = ({ username }: { username: string }) => {
 
     return (
       <form onSubmit={handlePasswordSubmit}>
+        {errorMessage && <p>{errorMessage}</p>}
         <div className="form-group">
           <label>Password</label>
           <input
@@ -85,6 +87,7 @@ const PasswordForm = ({ username }: { username: string }) => {
             required
           />
         </div>
+        <Link to={"/forgot-password"}> Forgot your password?</Link>
         <button type="submit">Sign in </button>
       </form>
     );

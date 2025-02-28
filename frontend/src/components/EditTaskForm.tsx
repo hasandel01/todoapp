@@ -8,8 +8,9 @@ interface EditTaskFormProps {
   initialTitle: string;
   initialDescription: string;
   initialDueTime: string;
-  initialCompleted: boolean;
   initialPriority: string;
+  initialIsRecurring: boolean;
+  initialRecurrencePattern: 'DAILY' | 'WEEKLY' | 'MONTHLY';
   onEditComplete: () => void;
 }
 
@@ -18,8 +19,9 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
   initialTitle,
   initialDescription,
   initialDueTime,
-  initialCompleted,
   initialPriority,
+  initialIsRecurring,
+  initialRecurrencePattern,
   onEditComplete
 }) => {
   const formik = useFormik({
@@ -27,14 +29,21 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
       title: initialTitle,
       description: initialDescription,
       dueTime: initialDueTime,
-      completed: initialCompleted,
-      priority: initialPriority
+      priority: initialPriority,
+      isRecurring: initialIsRecurring,
+      recurrencePattern: initialRecurrencePattern
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
       dueTime: Yup.date().required("Due time is required"),
-      priority: Yup.string().oneOf(["LOW", "MEDIUM", "HIGH"]).required("Priority is required")
+      priority: Yup.string().oneOf(["LOW", "MEDIUM", "HIGH"]).required("Priority is required"),
+      isRecurring: Yup.boolean(),
+      recurrencePattern: Yup.string().when("isRecurring", {
+        is: true,
+        then: Yup.string().oneOf(["DAILY", "WEEKLY", "MONTHLY"]).required("Recurrence pattern is required"),
+        otherwise: Yup.string().notRequired()
+      })
     }),
     onSubmit: async (values) => {
       try {
@@ -42,8 +51,9 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
           title: values.title,
           description: values.description,
           dueTime: values.dueTime,
-          completed: values.completed,
-          priority: values.priority
+          priority: values.priority,
+          isRecurring: values.isRecurring,
+          recurrencePattern: values.recurrencePattern
         });
         console.log("API Response:", response.data);
         onEditComplete(); 
@@ -59,10 +69,11 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
       title: initialTitle,
       description: initialDescription,
       dueTime: initialDueTime,
-      completed: initialCompleted,
-      priority: initialPriority
+      priority: initialPriority,
+      isRecurring: initialIsRecurring,
+      recurrencePattern: initialRecurrencePattern
     });
-  }, [initialTitle, initialDescription, initialDueTime, initialCompleted, initialPriority]);
+  }, [initialTitle, initialDescription, initialDueTime, initialPriority, initialIsRecurring, initialRecurrencePattern]);
 
   return (
     <div className="edit-task-form">
@@ -148,14 +159,52 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
 
         <div>
           <label>
-            Completed:
+            Recurring Task:
             <input
               type="checkbox"
-              name="completed"
-              checked={formik.values.completed}
+              name="isRecurring"
+              checked={formik.values.isRecurring}
               onChange={formik.handleChange}
             />
           </label>
+          {formik.values.isRecurring && (
+            <div>
+              <div>Recurrence Pattern:</div>
+              <label>
+                <input
+                  type="radio"
+                  name="recurrencePattern"
+                  value="DAILY"
+                  checked={formik.values.recurrencePattern === "DAILY"}
+                  onChange={formik.handleChange}
+                />
+                Daily
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="recurrencePattern"
+                  value="WEEKLY"
+                  checked={formik.values.recurrencePattern === "WEEKLY"}
+                  onChange={formik.handleChange}
+                />
+                Weekly
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="recurrencePattern"
+                  value="MONTHLY"
+                  checked={formik.values.recurrencePattern === "MONTHLY"}
+                  onChange={formik.handleChange}
+                />
+                Monthly
+              </label>
+              {formik.touched.recurrencePattern && formik.errors.recurrencePattern && (
+                <div className="error">{formik.errors.recurrencePattern}</div>
+              )}
+            </div>
+          )}
         </div>
 
         <div>

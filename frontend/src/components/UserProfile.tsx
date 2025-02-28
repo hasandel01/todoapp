@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
-import axiosInstance from "../axios/axios"; // Your axios config
+import { useRef, useEffect, useState } from "react";
+import axiosInstance from "../axios/axios";
+import '../css/UserProfile.css';
 
 const UserProfile = () => {
-  const [user, setUser] = useState<{ id: number; username: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ id: number; username: string; email: string; profilePictureUrl: string} | null>(null);
   const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchUserDetails = async () => {  
       try {
         const response = await axiosInstance.get("/auth/me");
         setUser(response.data);
@@ -22,11 +24,43 @@ const UserProfile = () => {
   if (error) return <p>{error}</p>;
   if (!user) return <p>Loading user details...</p>;
 
+    const triggerFileInput = () => {
+      fileInputRef.current?.click();
+    };
+  
+    
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      try {
+          if (e.target.files && e.target.files[0]) {
+  
+              const formData = new FormData();
+              formData.append('file', e.target.files[0]); 
+  
+              const response = await axiosInstance.post('/api/files/upload', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data',
+                  },
+              });
+  
+              setUser(prevUser => prevUser ? { ...prevUser, profilePictureUrl: response.data } : null);
+          }
+      } catch (error) {
+          console.error('Error uploading file:', error);
+      }
+  };
+
   return (
-    <div>
-      <h2>User Profile</h2>
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Email:</strong> {user.email}</p>
+    <div className="user-profile">
+      <input 
+        type='file'
+          ref={fileInputRef}
+          style={{display: 'none'}}
+          onChange={handleFileChange}/>
+      <img className="profile-img" onClick={triggerFileInput} src={user.profilePictureUrl || ''} alt="Profile" />
+      <div className="profile-details">
+        <h2>{user.username}</h2>
+        <h2>{user.email}</h2>
+      </div>
     </div>
   );
 };

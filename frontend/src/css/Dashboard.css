@@ -1,84 +1,163 @@
+:root {
+    --primary-color: #007BFF;
+    --secondary-color: #0056b3;
+    --background-color: aliceblue;
+    --background-color-dark: rgb(200, 212, 222);
+    --text-color: black;
+    --input-border-color: #ddd;
+    --error-color: #f44336;
+    --font-family: 'Roboto', sans-serif;
+  }
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--font-family);
+    color: var(--text-color);
+    background-color: var(--background-color);
     margin: 0;
     padding: 0;
-    background-color: aliceblue;
+}
+
+:root.dark-mode {
+    --background-color: #333;
+    --background-color-dark: #444;
+    --text-color: white;
+    --primary-color: #007BFF;
 }
 
 .dashboard {
     display: flex;
-    flex-direction: column;
     height: 100vh;
     width: 100%;
-    background-color: aliceblue;
+    padding: 0;
 }
 
 .dashboard header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    text-align: center;
-    background-color: aliceblue;
-    border-bottom: 2px solid #ddd;
-}
-
-.user-info {
-    font-size: 18px;
-    font-family: Arial, sans-serif;
-    color: #333;
-}
-
-.log-out {
-    position: fixed;
+    flex-direction: row;
+    justify-content: flex-end;
+    position: absolute;
+    right: 10px;
     top: 10px;
-    right: 20px;
-    font-size: 1.5rem;
-  }
-    
-.task-lists {
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-left: 5px;
+    border-bottom: 3px solid #ddd;
+    z-index: 2;
 }
 
-.task-lists-sidebar {
-    margin-top: 20px;
-    width: 250px;
-    background: aliceblue;
-    padding: 10px;
-    border-radius: 5px;
-    position: fixed;
-  }
-  
+.profile-picture {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin-left: 10px;
+    cursor: pointer;
+}
 
-.task-lists-sidebar ul {
+.profile-picture:hover {
+    opacity: 0.8;
+}
+
+.profile-menu {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    width: 150px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    z-index: 2;
+}
+
+.profile-menu ul {
     list-style-type: none;
     padding: 0;
 }
 
-.task-lists-sidebar ul li{
-    margin-bottom: 5px;
+.profile-menu ul li {
+    padding: 10px;
+    cursor: pointer;
+    list-style-type: none;
     transition: background-color 0.3s ease;
-    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;  
+}
+
+.profile-menu ul li:hover {
+    background-color: var(--background-color-dark);
+}
+
+/* Task List Handling */
+
+.task-lists {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    z-index: 0;
+}
+
+.task-lists-sidebar {
+    width: 20%;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: auto;
+    height: calc(100vh - 100px);
+    position: fixed;
+    border-right: 1px solid #ddd;
+}
+
+.task-lists-sidebar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.task-lists-sidebar ul li {
+    padding: 10px;
+    cursor: pointer;
+    list-style-type: none;
+    transition: background-color 0.3s ease;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
 }
 
 .task-lists-sidebar ul li:hover {
-    background-color: rgb(200, 210, 222);
+    background-color: var(--background-color-dark);
 }
 
-
 .task-lists-sidebar ul li.selected {
-    background-color: rgb(220, 227, 233);
+    background-color: var(--background-color-dark);
     font-weight: bold;
 }
 
-
 .task-lists-main {
-    flex: 1;
+    padding: 10px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    background-color: var(--background-color);
+    margin-left: 22%;
+    overflow-y: auto;
+}
   
+  .create-new-list-container {
+    position: absolute;
+    width: 100%;
+    padding: 10px;
+    bottom: 0px;
+    display: flex;
+    border-top: 1px solid #ddd;
+    background-color: var(--background-color);  
+  }
+
+  .create-new-list-container:hover {
+    background-color: var(--background-color-dark);
+  }

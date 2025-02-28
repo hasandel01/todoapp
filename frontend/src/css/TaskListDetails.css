@@ -1,29 +1,52 @@
 .task-list-details {
-  font-family: Arial, Helvetica, sans-serif;
-  width: 100%;
-  max-width: 700px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: aliceblue;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  background-color: var(--background-color);
+  margin-bottom: 30px;
 }
 
 .task-list-header {
   display: flex;
+  flex-direction: row; 
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   margin-bottom: 20px;
+}
+
+.add-task-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.task-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
+}
+
+.title-input {
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.title-input:focus {
+  outline: none;
+  background-color: var(--background-color);
+  font-size: large;
 }
 
 
@@ -38,19 +61,18 @@
     padding: 0;
 }
 
-/* Label for the toggle button */
 .toggle-label {
   margin-left: 10px;
   font-size: 14px;
   font-weight: normal;
-  color: #333;
+  color: var(--text-color);
 }
 
 .dropdown-menu {
   position: absolute;
   top: 30px;
   right: 0;
-  background-color: #fff;
+  background-color: var(--background-color);
   border: 1px solid #ccc;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
@@ -69,7 +91,7 @@
 }
 
 .dropdown-menu ul li:hover {
-  background-color: #f0f0f0;
+  background-color: var(--background-color-dark);
 }
 
 .task-item {
@@ -78,7 +100,7 @@
     align-items: center;
     padding: 10px;
     margin: 10px 0;
-    background-color: aliceblue;
+    background-color: var(--background-color);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -108,8 +130,8 @@
 .due {
   font-size: 14px;
   font-weight: bold;
-  color: #333;
-  background: aliceblue;
+  color: var(--text-color);
+  background: var(--background-color);
   padding: 8px 12px;
   border-radius: 6px;
   text-align: center;
@@ -120,7 +142,8 @@
 }
 
 .due:hover {
-  background: rgb(172, 216, 255);
+  background: var(--background-color-dark);
+  cursor: pointer;
 }
 
 
@@ -129,8 +152,8 @@
   height: 35px;
   border-radius: 50%;
   border: none;
-  background: aliceblue;
-  color: #333;
+  background: var(--background-color);
+  color: var(--text-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,30 +162,64 @@
 }
 
 .delete-button:hover {
-  background: rgb(172, 216, 255);
+  background: var(--background-color-dark);
 }
 
 .trash-icon {
   font-size: 18px;
 }
 
-.add-task-button {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%; 
-  background: rgb(56, 162, 255);
-  color: white;
-  font-size: 24px;
-  border: none;
-  position: relative;
-  margin-left: 650px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s;
-  outline: none;
+.task-content{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
 }
 
-.add-task-button:hover {
-  background: rgb(4, 138, 255);
-  outline: none;
+.task-content input[type="checkbox"] {
+  margin-right: 10px;
+  margin-top: 5px;
+  border-radius: 2px;
+}
+
+.title-description
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+input[type="checkbox"] + label {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background-color: white;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+input[type="checkbox"]:hover + label {
+  background-color: #f0f0f0;
+}
+
+input[type="checkbox"]:checked + label {
+  background-color: #4CAF50;
+  border-color: #4CAF50; 
+}
+
+input[type="checkbox"]:checked + label::before {
+  content: "✔";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: white;
 }

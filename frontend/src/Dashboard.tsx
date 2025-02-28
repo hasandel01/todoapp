@@ -1,68 +1,97 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axiosInstance from './axios/axios';
-import { Link, useNavigate, useParams} from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import TaskListDetails from './components/TaskListDetails';
 import AddTaskList from './components/AddTaskList';
 import './css/Dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faSignOutAlt, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import UserProfile from './components/UserProfile';
 
 const Dashboard = () => {
 
   const [taskLists, setTaskLists] = useState<{ id: number; title: string }[]>([]);
-  const [user, setUser] = useState<{ username: string, email: string} | null>(null);
+  const [user, setUser] = useState<{ username: string, email: string, profileUrl: string} | null>(null);
   const [error, setError] = useState('');
   const [selectedTaskListId, setSelectedTaskListId] = useState<number | null>(null);
   const [addTaskListSuccess, setAddTaskListSuccess] = useState(false);
   const [deleteTaskListSuccess, setDeleteTaskListSuccess] = useState(false);
   const [title, setTitle] = useState('');
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [profileToggle, setProfileToggle] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [userProfile, setUserProfile] = useState(false);
 
+  const toggleDarkMode = () => {
+    setDarkMode(prev => !prev);
+    const documentElement = document.documentElement;
+    documentElement.classList.toggle('dark-mode');
+  }
+
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    setDarkMode(savedDarkMode);
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode.toString());
+  }, [darkMode]);
+  
+
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('token');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  const createDefaultTaskList = async () => {
+    try {
+
+      const defaultTaskList = await axiosInstance.post(`/task-list/add`, {
+        title: 'My Tasks' 
+      });
+      setTaskLists(prevTaskLists => [...prevTaskLists, defaultTaskList.data]);
+      setSelectedTaskListId(defaultTaskList.data.id);
+      handleAddTaskListSuccess();
+
+    }
+    catch (error) {
+      console.error('Error creating default task list:', error);
+    }
+  };
 
   useEffect(() => {
 
     const fetchData = async () => {
+      
       try {
-
         const userResponse = await axiosInstance.get('/auth/me');
         setUser(userResponse.data);
-
+        setImageUrl(userResponse.data.profilePictureUrl);
+      
         const taskListResponse = await axiosInstance.get('/task-list');
         setTaskLists(taskListResponse.data);
 
-        let fetchedTaskList = taskListResponse.data;
-
-        if(fetchedTaskList.length === 0) {
-          const defaultTaskList = await axiosInstance.post(`/task-list/add`, {
-            title: 'My Tasks' 
-          });
-          setTaskLists(prevTaskLists => [...prevTaskLists, defaultTaskList.data]);
-          setSelectedTaskListId(defaultTaskList.data.id);
-          handleAddTaskListSuccess();
+        if(taskListResponse.data.length === 0) {
+          createDefaultTaskList();
         }
-
 
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data.');
       }
     };
-
+ 
     fetchData();
-  }, [addTaskListSuccess,deleteTaskListSuccess]);
+  }, [addTaskListSuccess,deleteTaskListSuccess,imageUrl]);
 
+  
   if (error) return <p>{error}</p>;
   if (!user) return <p>Loading user details...</p>;
-
-
-  const handleLogout = async () => {
-  try {
-    localStorage.removeItem('token');
-    navigate('/login');
-  } catch (error) {
-    console.error('Logout failed:', error);
-  }
-};
 
 
   const refreshTaskLists = () => {
@@ -87,37 +116,69 @@ const Dashboard = () => {
       )
     );
   };
+
+  const triggerProfileToggle = () => {
+    setProfileToggle(prev => !prev);
+  };
   
+  const toggleUserProfile = () => {
+    setUserProfile(prev => !prev);
+  }
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${darkMode ? 'dark-mode' : ''}`}>
       <header className="dashboard-header">
-          <div className="user-info">
-            <h3>Welcome, {user.username}!</h3> 
+          <div className="picture-container">
+              <img onClick={triggerProfileToggle} className="profile-picture" src={imageUrl || ''} alt='profile' />
           </div>
-          <div className='log-out' onClick={handleLogout}>
-            <FontAwesomeIcon icon={faSignOutAlt} />
-          </div>
-      </header>
+        </header>
+          {profileToggle && (
+            <div className='profile-menu'>
+              <ul>
+                <li className="profile-menu-icon" onClick={toggleUserProfile}>
+                  <FontAwesomeIcon icon={faUser} size="lg"  /> Profile
+                </li>
+                <li className="profile-menu-icon" onClick={handleLogout}>
+                  <FontAwesomeIcon icon={faSignOutAlt} size="lg" /> Log out
+                </li> 
+                <li className='toggle-container'>
+                  <label className='toggle-switch'>
+                    <input type='checkbox'
+                    checked={darkMode}
+                    onChange={toggleDarkMode} />
+                    <span className='slider'></span>
+                  </label>
+                  <span className='toggle-label'>Dark Mode</span>
+                </li>
+              </ul>
+            </div>
+          )}
     <div className='task-lists'> 
-      <aside className='task-lists-sidebar'>
-        <ul>
-          {taskLists.map((taskList) => (
-            <li key={taskList.id} onClick={ () => handleSelection(taskList.id, taskList.title)}
-            className= { selectedTaskListId === taskList.id ? 'selected' : ''}>
-            {taskList.title} 
-            </li>
-          ))}
-        </ul>
-        <AddTaskList onAddTaskListSuccess={handleAddTaskListSuccess}/>
-      </aside>
-      <main className='task-lists-main'>
-        {selectedTaskListId && <TaskListDetails
-                                        onUpdateTaskList={handleUpdateTaskListTitle}
-                                        onHandleDeleteTaskList={refreshTaskLists}
-                                        id={selectedTaskListId}/>}
-        </main> 
+        <div className='task-lists-sidebar'>
+          <ul>
+            {taskLists.map((taskList) => (
+              <li key={taskList.id} onClick={ () => handleSelection(taskList.id, taskList.title)}
+              className= { selectedTaskListId === taskList.id ? 'selected' : ''}>{taskList.title} 
+              </li>
+            ))}
+          </ul>
+          <div className='create-new-list-container'>
+            <AddTaskList onAddTaskListSuccess={handleAddTaskListSuccess} />
+        </div>
+        </div>
+        <div className='task-lists-main'>
+          {selectedTaskListId && <TaskListDetails
+                                          onUpdateTaskList={handleUpdateTaskListTitle}
+                                          onHandleDeleteTaskList={refreshTaskLists}
+                                          id={selectedTaskListId}/>}
+          </div> 
       </div>
+      {userProfile && (
+        <div className="user-profile-container">
+          <UserProfile />
+          <button className="close-profile" onClick={() => setProfileToggle(false)}>X</button>
+        </div>
+      )}
     </div>
   );
 };

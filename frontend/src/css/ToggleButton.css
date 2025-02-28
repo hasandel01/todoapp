@@ -1,11 +1,9 @@
-/* Style the container to align the toggle and label */
 .toggle-container {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
-/* Toggle switch styles */
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -43,19 +41,17 @@
   transition: 0.4s;
 }
 
-/* When checked, change the background and slider position */
 input:checked + .slider {
-  background-color: rgb(23, 111, 187);
+  background-color: var(--primary-color);
 }
 
 input:checked + .slider:before {
   transform: translateX(20px);
 }
 
-/* Label for the toggle button */
 .toggle-label {
   margin-left: 10px;
   font-size: 14px;
   font-weight: normal;
-  color: #333;
+  color: var(--text-color);
 }
