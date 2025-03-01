@@ -25,8 +25,8 @@ A simple and intuitive task management tool designed to help you organize, track
 
 Before you begin, make sure you have the following installed:
 
-- Java 17 or higher
-- MySQL or PostgreSQL (depending on your choice of database)
+- Java 8+
+- Any Relational Database System
 - Maven (for building the project)
 - Node.js and npm (if using React for frontend)
 
