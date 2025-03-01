@@ -1,5 +1,5 @@
   .form-title {
-    background: white;
+    background: var(--item-color);
     padding: 5px;
     border-radius: 5px;
     width: 100%;
@@ -7,26 +7,63 @@
   }
   
   .form-title input {
-    width: 100%;
+    width: 90%;
+    background-color: var(--item-color);
+    color: var(--text-color);
     padding: 5px;
     margin: 5px 0;
     border: none;
     border-radius: 5px;
   }
 
+  .form-title input::placeholder {
+    color: var(--text-color);
+  }
+
   .form-title input:focus {
     outline: none;
-
   }
 
   .additional-details {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
     margin-right: 10px;
   }
 
+  .add-task-details-button {
+    width: 30px; 
+    height: 30px;
+    margin-right: 5px;
+    display: inline-block;
+    border-radius: 50%;
+    background-color: var(--item-color);
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary-color);
+  }
+
+  .priority-container {
+    display: flex;
+    flex-direction: row;
+    padding: 3px;
+    align-items: center;
+  }
+
+  .repeat-task-container {
+    display: flex;
+    flex-direction: row;
+    padding: 3px;
+    align-items: center;
+
+  }
+
+  .add-task-details-button:hover {
+    background-color: var(--item-color-hover);
+  }
+  
   .modal button {
     width: 50%;
     padding: 5px;
@@ -41,15 +78,6 @@
     color: white;
   }
   
-
-  .radio-group label{
-    display: inline-block;
-    margin-right: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-left: 20px;
-  }
-
   .disabled-btn {
     background: #ccc;
     color: #fff;
@@ -61,28 +89,16 @@
     color: #fff;
   }
 
-
-.priority-button,
-.repeat-task-icon {
-  display: inline-block;
-  padding: 10px;
-  border-radius: 50%;
-  background-color: var(--background-color);
-  cursor: pointer;
-  font-size: 24px;
-  margin-right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.priority-button:hover,
-.repeat-task-icon:hover {
-  background-color: var(--background-color-dark);
-}
+  .calendar {
+    position: absolute;
+    top: 200px; /* Adjust based on your layout */
+    left: 0;
+    z-index: 1000;
+  }
+  
 
 .priority-menu {
-  position: relative;
+  position: fixed;
   background-color: var(--background-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -102,11 +118,11 @@
 }
 
 .priority-menu li:hover {
-  background-color: #f1f1f1;
+  background-color: var(--background-color-dark);
 }
 
 .recurring-options {
-  position: relative;
+  position: fixed;
   background-color: var(--background-color);
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -130,10 +146,6 @@
   background-color: var(--background-color-dark);
 }
 
-.show-recurring .recurring-options {
-  display: block;
-}
-
-.show-priority .priority-options {
-  display: block;
+.empty-due {
+  border: none;
 }

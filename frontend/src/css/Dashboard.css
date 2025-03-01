@@ -5,6 +5,8 @@
     --background-color-dark: rgb(200, 212, 222);
     --text-color: black;
     --input-border-color: #ddd;
+    --item-color: rgb(202, 228, 251);
+    --item-color-hover: rgb(179, 209, 255);
     --error-color: #f44336;
     --font-family: 'Roboto', sans-serif;
   }
@@ -22,6 +24,9 @@ body {
     --background-color-dark: #444;
     --text-color: white;
     --primary-color: #007BFF;
+    --item-color: #555;
+    --item-color-hover: #666;
+    --secondary-color: #8eb3db;
 }
 
 .dashboard {
@@ -63,6 +68,8 @@ body {
     border: 1px solid #ddd;
     border-radius: 5px;
     z-index: 2;
+    background-color: var(--background-color);
+
 }
 
 .profile-menu ul {
@@ -77,7 +84,7 @@ body {
     transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 10px;  
+    gap: 10px;
 }
 
 .profile-menu ul li:hover {

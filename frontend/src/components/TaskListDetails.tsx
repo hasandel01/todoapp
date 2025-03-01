@@ -266,7 +266,7 @@ const toggleMenu = () => {
                     <span className="task-description">{task.description}</span>
                   </div>
                 </div>
-                <span className="due">{FormatDate(task.dueTime)}</span>
+                <span className={task.dueTime === '' ? "empty-due" : "due"}>{FormatDate(task.dueTime)}</span>
                 <button onClick={() => handleDeleteTask(task.id)} className="delete-button">
                   <FontAwesomeIcon className="trash-icon" icon={faTrash}/>
                 </button>

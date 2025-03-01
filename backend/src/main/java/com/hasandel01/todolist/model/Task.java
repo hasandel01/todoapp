@@ -27,11 +27,9 @@ public class Task {
     @NotBlank(message = "Title is required.")
     private String title;
 
-    @Column(nullable = true)
     private String description;
 
     @FutureOrPresent(message = "Due date cannot be in the past.")
-    @Column(nullable = false)
     private LocalDateTime dueTime;
 
     private boolean completed;
