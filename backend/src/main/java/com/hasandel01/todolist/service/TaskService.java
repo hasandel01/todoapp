@@ -1,18 +1,15 @@
 package com.hasandel01.todolist.service;
 
-
 import com.hasandel01.todolist.model.Task;
 import com.hasandel01.todolist.model.TaskList;
 import com.hasandel01.todolist.repository.TaskListRepository;
 import com.hasandel01.todolist.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.constraints.FutureOrPresent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.List;
 
 @Service
 public class TaskService {
@@ -24,11 +21,6 @@ public class TaskService {
         this.taskRepository = taskRepository;
         this.taskListRepository = taskListRepository;
     }
-
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
-    }
-
 
     public Task addTaskToTheList(Long taskListId, Task task) {
             TaskList taskList = taskListRepository.findById(taskListId)
@@ -97,9 +89,7 @@ public class TaskService {
                 .build();
     }
 
-    private @FutureOrPresent(message = "Due date cannot be in the past.") LocalDateTime
-    calculateNewDueTime(@FutureOrPresent(message = "Due date cannot be in the past.")
-                        Task task) {
+    private LocalDateTime calculateNewDueTime(Task task) {
 
             switch (task.getRecurrencePattern()) {
                 case DAILY -> {

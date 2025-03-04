@@ -1,19 +1,14 @@
 package com.hasandel01.todolist.service;
 
-
-import com.hasandel01.todolist.exceptions.TaskListIsNotFoundException;
 import com.hasandel01.todolist.exceptions.UserNotAuthenticatedException;
-import com.hasandel01.todolist.model.Task;
 import com.hasandel01.todolist.model.TaskList;
 import com.hasandel01.todolist.model.User;
 import com.hasandel01.todolist.repository.TaskListRepository;
-import com.hasandel01.todolist.repository.TaskRepository;
 import com.hasandel01.todolist.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +39,6 @@ public class TaskListService {
         this.taskListRepository.save(newTaskList);
         return newTaskList;
     }
-
 
     public Optional<TaskList> getTaskListById(Long id) {
         return taskListRepository.findById(id);

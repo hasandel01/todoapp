@@ -14,7 +14,5 @@ import java.util.Optional;
 @Repository
 public interface TaskListRepository extends JpaRepository<TaskList, Long> {
 
-     Optional<TaskList> findByTitle(String title);
-
     List<TaskList> findByUser(User user);
 }

@@ -24,11 +24,6 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
-    }
-
     @PostMapping("/task-list/{id}/task")
     public ResponseEntity<Task> addTask(@Valid @RequestBody Task task, @PathVariable Long id) {
         try{
