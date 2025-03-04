@@ -9,7 +9,7 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const user = {

@@ -1,7 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { addTask } from '../axios/axios';
+import React, {useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../css/AddTaskForm.css'; 
@@ -29,7 +26,6 @@ interface AddTaskFormProps {
 
 const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }) => {
 
-  const [message, setMessage] = useState('');
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -44,33 +40,11 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
   const [showCalendar, setShowCalendar] = useState(false);  
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showRecurringMenu, setShowRecurringMenu] = useState(false);
-  const [priorityChange, setPriorityChange] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
-      title: '',
-      description: '',
-      dueDate: '',
-      completed: false,
-    },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-      description: Yup.string().required('Description is required'),
-      dueDate: Yup.date().required('Due date is required'),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const response = await addTask(values, taskListId);
-        setMessage('Task added successfully!');
-      } catch (error) {
-        setMessage('Failed to add task. Please try again.');
-      }
-    },
-  });
 
   const handleAddTask = async () => {
     if (!newTask.title.trim()) {
-      setMessage('Title is required!');
+      alert('Title is required!');
       return;
     }
 
@@ -87,9 +61,9 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
         recurring: false,
         recurrencePattern: 'DAILY',
       });
-      setMessage('Task added successfully!');
+      alert('Task added successfully!');
     } catch (error) {
-      setMessage('Failed to add task.');
+      alert('Failed to add task.');
       console.error('Error adding task:', error);
     }
   };
@@ -120,13 +94,12 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
       priority,
     });
     setShowPriorityMenu(false);
-    setPriorityChange(true);
   };
 
   const handleRecurringChange = (recurrencePattern: string) => {
 
     const updatedDueTime = selectedDate ? selectedDate.toISOString() : new Date().toISOString();
-  
+
     setNewTask(prevTask => ({
       ...prevTask,
       dueTime: updatedDueTime,

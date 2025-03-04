@@ -29,9 +29,7 @@ interface TaskListDetailsProps {
 const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTaskList, onUpdateTaskList}) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState({ title: '', description: '', dueTime: '', completed: false, priority: '', recurring: false, recurrencePattern: 'DAILY' });
-  const [message, setMessage] = useState('');
   const [title, setTitle] = useState('');
-  const [error, setError] = useState('');
   const [editedTitle, setEditedTitle] = useState<string>('');
   const [editingTaskListId, setEditingTaskListId] = useState<number | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -62,9 +60,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
     try {
       await axiosInstance.delete(`/delete/${taskId}`);
       setTasks(tasks.filter(task => task.id !== taskId));
-      setMessage('Task deleted successfully!');
     } catch (error) {
-      setMessage('Failed to delete task.');
       console.error('Error deleting task:', error);
     }
   };
@@ -82,7 +78,6 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = ({id, onHandleDeleteTask
     }
     catch(error) {
       console.error('Failed to delete task list:', error);
-      setError("Failed to delete task list.");
     }
   
   };
@@ -123,7 +118,6 @@ const handleEditSubmit = async () => {
     }
     catch(error) {
       console.error('Failed to edit task list:', error);
-      setError("Failed to edit task list.");
     }
 
 };
@@ -148,7 +142,6 @@ const toggleMenu = () => {
     }
     catch(error) {
       console.error('Failed to complete task:', error);
-      setError("Failed to complete task.");
     }
   };
   

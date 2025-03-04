@@ -8,7 +8,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [usernameValid, setUsernameValid] = useState(false);
 
-  const handleUsernameSubmit = async (e) => {
+  const handleUsernameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -56,7 +56,7 @@ const PasswordForm = ({ username }: { username: string }) => {
   const [errorMessage, setErrorMessage] = useState(''); 
   const navigate = useNavigate();
 
-  const handlePasswordSubmit = async (e) => {
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {

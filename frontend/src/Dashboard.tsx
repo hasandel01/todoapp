@@ -14,9 +14,6 @@ const Dashboard = () => {
   const [user, setUser] = useState<{ username: string, email: string, profileUrl: string } | null>(null);
   const [error, setError] = useState('');
   const [selectedTaskListId, setSelectedTaskListId] = useState<number | null>(null);
-  const [addTaskListSuccess, setAddTaskListSuccess] = useState(false);
-  const [deleteTaskListSuccess, setDeleteTaskListSuccess] = useState(false);
-  const [title, setTitle] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const [profileToggle, setProfileToggle] = useState(false);
@@ -50,7 +47,6 @@ const Dashboard = () => {
   };
 
   const handleAddTaskListSuccess = () => {
-    setAddTaskListSuccess(prev => !prev);
   };
 
   const createDefaultTaskList = async () => {
@@ -111,13 +107,11 @@ const Dashboard = () => {
   if (!user) return <p>Loading user details...</p>;
 
   const refreshTaskLists = () => {
-    setDeleteTaskListSuccess(prev => !prev);
     setSelectedTaskListId(null);
   };
 
-  const handleSelection = (id: number, title: string) => {
+  const handleSelection = (id: number) => {
     setSelectedTaskListId(id);
-    setTitle(title);
   };
 
   const handleUpdateTaskListTitle = (id: number, newTitle: string) => {
@@ -172,7 +166,7 @@ const Dashboard = () => {
           <div className={`task-lists-sidebar ${showSidebar ? '' : 'hidden'}`}>
             <ul>
               {taskLists.map((taskList) => (
-                <li key={taskList.id} onClick={() => handleSelection(taskList.id, taskList.title)}
+                <li key={taskList.id} onClick={() => handleSelection(taskList.id)}
                   className={selectedTaskListId === taskList.id ? 'selected' : ''}>
                   {taskList.title}
                 </li>

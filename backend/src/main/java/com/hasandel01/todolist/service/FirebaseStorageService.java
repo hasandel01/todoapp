@@ -28,8 +28,6 @@ public class FirebaseStorageService {
     private final Storage storage;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
-    @Value("${firebase.credentials.path}")
-    private String firebaseCredentialsPath;
 
     public FirebaseStorageService(UserDetailsService userDetailsService, UserRepository userRepository) {
         this.storage = initializeFirebase();
@@ -39,7 +37,7 @@ public class FirebaseStorageService {
 
     private Storage initializeFirebase() {
         try {
-            ClassPathResource resource = new ClassPathResource(firebaseCredentialsPath);
+            ClassPathResource resource = new ClassPathResource("todoapplication-ef2d3-firebase-adminsdk-fbsvc-f82a6e66d6.json");
             GoogleCredentials credentials = GoogleCredentials.fromStream(resource.getInputStream());
 
             FirebaseOptions options = new FirebaseOptions.Builder()
