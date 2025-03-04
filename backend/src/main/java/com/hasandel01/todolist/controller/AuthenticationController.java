@@ -5,6 +5,7 @@ import com.hasandel01.todolist.dto.UserDTO;
 import com.hasandel01.todolist.auth.model.AuthenticationRequest;
 import com.hasandel01.todolist.auth.model.AuthenticationResponse;
 import com.hasandel01.todolist.auth.model.RegisterRequest;
+import com.hasandel01.todolist.exceptions.UserIsRegisteredException;
 import com.hasandel01.todolist.model.User;
 import com.hasandel01.todolist.repository.UserRepository;
 import com.hasandel01.todolist.service.AuthenticationService;
@@ -29,7 +30,11 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authenticationService.register(registerRequest));
+        try {
+            return ResponseEntity.ok(authenticationService.register(registerRequest));
+        } catch (UserIsRegisteredException e) {
+            return ResponseEntity.ok().body(AuthenticationResponse.builder().token(e.getMessage()).build());
+        }
     }
 
     @PostMapping("/authenticate")

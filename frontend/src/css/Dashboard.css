@@ -119,6 +119,7 @@ body {
 .show-sidebar:hover {
     background-color: var(--background-color-dark);
 }
+
 .show-sidebar:focus {
     outline: none;
 }

@@ -5,6 +5,7 @@ import com.hasandel01.todolist.auth.model.AuthenticationRequest;
 import com.hasandel01.todolist.auth.model.AuthenticationResponse;
 import com.hasandel01.todolist.auth.model.RegisterRequest;
 import com.hasandel01.todolist.dto.UserDTO;
+import com.hasandel01.todolist.exceptions.UserIsRegisteredException;
 import com.hasandel01.todolist.model.Role;
 import com.hasandel01.todolist.model.User;
 import com.hasandel01.todolist.repository.UserRepository;
@@ -40,15 +41,24 @@ public class AuthenticationService {
                 + URLEncoder.encode("default_profile_picture.png", StandardCharsets.UTF_8)
                 + "?alt=media&token=" + downloadToken;
 
-        var user = User.builder()
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .email(registerRequest.getEmail())
-                .profilePictureUrl(publicUrl)
-                .role(Role.USER)
-                .build();
+        User user = userRepository.findByEmail(registerRequest.getEmail()).orElse(null);
 
-        userRepository.save(user);
+        if(user != null) {
+            throw new UserIsRegisteredException("User with " +
+                    registerRequest.getEmail() + " is already registered.");
+        }
+        else {
+
+            user = User.builder()
+                    .username(registerRequest.getUsername())
+                    .password(passwordEncoder.encode(registerRequest.getPassword()))
+                    .email(registerRequest.getEmail())
+                    .profilePictureUrl(publicUrl)
+                    .role(Role.USER)
+                    .build();
+
+            userRepository.save(user);
+        }
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();

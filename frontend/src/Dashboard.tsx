@@ -22,9 +22,8 @@ const Dashboard = () => {
   const [profileToggle, setProfileToggle] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [userProfile, setUserProfile] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
 
-  // useRef ile default listenin oluşturulup oluşturulmadığını takip ediyoruz.
   const defaultTaskListCreated = useRef(false);
 
   const toggleDarkMode = () => {
@@ -73,12 +72,12 @@ const Dashboard = () => {
         const userResponse = await axiosInstance.get('/auth/me');
         setUser(userResponse.data);
         setImageUrl(userResponse.data.profilePictureUrl);
-
+  
         const taskListResponse = await axiosInstance.get('/task-list');
-        // Eğer hiç liste yoksa ve default liste henüz oluşturulmamışsa, default listeyi oluştur
-        if(taskListResponse.data.length === 0 && !defaultTaskListCreated.current) {
-          await createDefaultTaskList();
+  
+        if (taskListResponse.data.length === 0 && !defaultTaskListCreated.current) {
           defaultTaskListCreated.current = true;
+          await createDefaultTaskList();
         } else {
           setTaskLists(taskListResponse.data);
         }
@@ -87,10 +86,26 @@ const Dashboard = () => {
         setError('Failed to fetch data.');
       }
     };
-
-    // Sadece bileşen ilk mount edildiğinde fetchData çalışsın:
+  
     fetchData();
-  }, [imageUrl]); // addTaskListSuccess ve deleteTaskListSuccess'ı kaldırdık, çünkü default liste kontrolü sadece ilk yüklemede yapılmalı.
+  }, []);
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userResponse = await axiosInstance.get('/auth/me');
+        setUser(userResponse.data);
+        setImageUrl(userResponse.data.profilePictureUrl);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setError('Failed to fetch user data.');
+      }
+    };
+
+    fetchUser();
+  }, [imageUrl]);
+  
 
   if (error) return <p>{error}</p>;
   if (!user) return <p>Loading user details...</p>;

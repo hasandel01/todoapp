@@ -9,6 +9,7 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.hasandel01.todolist.model.User;
 import com.hasandel01.todolist.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class FirebaseStorageService {
 
     private Storage initializeFirebase() {
         try {
-            ClassPathResource resource = new ClassPathResource("todoapplication-ef2d3-firebase-adminsdk-fbsvc-7612a0b98f.json");
+            ClassPathResource resource = new ClassPathResource("todoapplication-ef2d3-firebase-adminsdk-fbsvc-3e679b045e.json");
             GoogleCredentials credentials = GoogleCredentials.fromStream(resource.getInputStream());
 
             FirebaseOptions options = new FirebaseOptions.Builder()

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+
 const Register = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -8,11 +9,9 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  // Handle the form submission
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Create the user object
     const user = {
       username,
       password,
@@ -20,13 +19,16 @@ const Register = () => {
     };
 
     try {
-      // Send the POST request to register the user
       const response = await axios.post('http://localhost:8080/auth/register', user);
 
-      // Assuming the response contains the JWT token
       const { token } = response.data;
 
-      // Store the JWT token in localStorage (or sessionStorage)
+      console.log(token);
+
+      if(token === "User with " + user.email + " is already registered.") {
+        throw new Error('User with this email already exists.');
+      }
+ 
       localStorage.setItem('jwtToken', token);
 
       setMessage('Registration successful!');
@@ -35,7 +37,11 @@ const Register = () => {
 
     } catch (error) {
       console.error('Error during registration', error);
-      setMessage('Error during registration.');
+      if (error instanceof Error) {
+        setMessage(error.message);
+      } else {
+        setMessage('An unknown error occurred.');
+      }
     }
   };
 
