@@ -174,7 +174,6 @@ const toggleMenu = () => {
 
 
   return (
-    <>
       <div className="task-list-details">
         <div className="task-list-header">
           {/* Header content goes here */}
@@ -226,7 +225,6 @@ const toggleMenu = () => {
             </div>
           </div>
         </div>
-
         {/* Add task form component */}
         <div className="add-task-form">
           <AddTaskForm 
@@ -234,12 +232,19 @@ const toggleMenu = () => {
             taskListId={id} 
           />
         </div>
-
         {/* Task container component */}
         <div className="task-container">
           <ul>
             {tasksToDisplay.map(task => (
               <li key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
+                  <input
+                    type="checkbox"
+                    id='task-checkbox'
+                    checked={task.completed}
+                    onChange={() => handleCompleteTask(task)}
+                    onClick={(e) => e.stopPropagation()} 
+                  />
+                  <label htmlFor='task-checkbox'></label>
                 <div className="task-content" onClick={() => handleEditTask(task.id)}>
                   {editingTaskId === task.id && 
                     <EditTaskForm
@@ -253,14 +258,6 @@ const toggleMenu = () => {
                       onEditComplete={() => setEditingTaskId(null)} 
                     />
                   }
-                  <input
-                    type="checkbox"
-                    id='task-checkbox'
-                    checked={task.completed}
-                    onChange={() => handleCompleteTask(task)}
-                    onClick={(e) => e.stopPropagation()} 
-                  />
-                  <label htmlFor='task-checkbox'></label>
                   <div className="title-description">
                     <span className="task-title">{task.title}</span>
                     <span className="task-description">{task.description}</span>
@@ -275,7 +272,6 @@ const toggleMenu = () => {
           </ul>
         </div>
       </div>
-    </>
   );
 };  
 

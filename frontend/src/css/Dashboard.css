@@ -39,7 +39,7 @@ body {
 .dashboard header {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -69,7 +69,6 @@ body {
     border-radius: 5px;
     z-index: 2;
     background-color: var(--background-color);
-
 }
 
 .profile-menu ul {
@@ -100,20 +99,46 @@ body {
     width: 100%;
     display: flex;
     flex-direction: row;
-    z-index: 0;
+    background-color: var(--background-color);
+}
+
+.show-sidebar {
+    position: relative;
+    padding: 20px;
+    width: 5%;
+    height: 5%;
+    top: 5px;
+    left: 5px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+}
+
+.show-sidebar:hover {
+    background-color: var(--background-color-dark);
+}
+.show-sidebar:focus {
+    outline: none;
 }
 
 .task-lists-sidebar {
+    position: absolute;
     width: 20%;
-    border-radius: 5px;
+    border-right: 1px solid #ddd;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     overflow-y: auto;
     height: calc(100vh - 100px);
-    position: fixed;
-    border-right: 1px solid #ddd;
+    overflow-x: hidden;
+    transition: max-width 0.3s ease-in-out;
+}
+
+.task-lists-sidebar.hidden {
+    max-width: 0;
 }
 
 .task-lists-sidebar ul {
@@ -127,7 +152,6 @@ body {
     padding: 10px;
     cursor: pointer;
     list-style-type: none;
-    transition: background-color 0.3s ease;
     border-bottom: 1px solid #ddd;
     display: flex;
     align-items: center;
@@ -144,25 +168,33 @@ body {
     font-weight: bold;
 }
 
-.task-lists-main {
-    padding: 10px;
+.task-list-main {
+    padding: 2%;
     display: flex;
-    flex-direction: column;
+    margin-right: 10px;
     justify-content: space-between;
     flex: 1;
     background-color: var(--background-color);
-    margin-left: 22%;
+    margin-left: 20%;
     overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 130px);
 }
+
+.task-list-main.full-screen {
+    margin-left: 0;
+    width: 100%;
+  }
   
   .create-new-list-container {
-    position: absolute;
+    position: relative;
     width: 100%;
     padding: 10px;
     bottom: 0px;
     display: flex;
     border-top: 1px solid #ddd;
-    background-color: var(--background-color);  
+    background-color: var(--background-color);
+    transition: transform 0.3s ease;
   }
 
   .create-new-list-container:hover {

@@ -51,7 +51,7 @@ const AddTaskList: React.FC<AddTaskListProps> = ( {onAddTaskListSuccess}) => {
                 <div className="modal-overlay" onClick={() => setShowTitle(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                     <input 
-                        type="text" 
+                        type="text1" 
                         autoFocus
                         placeholder="Please enter a title."
                         value={title}

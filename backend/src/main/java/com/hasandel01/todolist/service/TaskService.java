@@ -10,6 +10,8 @@ import jakarta.validation.constraints.FutureOrPresent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -31,10 +33,14 @@ public class TaskService {
     public Task addTaskToTheList(Long taskListId, Task task) {
             TaskList taskList = taskListRepository.findById(taskListId)
                     .orElseThrow(() -> new EntityNotFoundException("Task list does not exist"));
-            if (task.getDueTime() != null && task.getDueTime().getSecond() == 0) {
-                task.setDueTime(task.getDueTime().withSecond(0).withNano(0));
-            }
-            task.setTaskList(taskList);
+
+        if (task.getDueTime() != null) {
+            task.setDueTime(task.getDueTime().atZone(ZoneOffset.UTC)
+                    .withZoneSameInstant(ZoneId.systemDefault())
+                    .toLocalDateTime());
+        }
+
+        task.setTaskList(taskList);
             return taskRepository.save(task);
     }
 
@@ -80,18 +86,15 @@ public class TaskService {
 
     private Task createNewRecurringTask(Task task) {
 
-        Task newTask = new Task();
-
-        newTask.setTitle(task.getTitle());
-        newTask.setDescription(task.getDescription());
-        newTask.setDueTime(calculateNewDueTime(task));
-        newTask.setPriority(task.getPriority());
-        newTask.setRecurrencePattern(task.getRecurrencePattern());
-        newTask.setRecurring(true);
-        newTask.setTaskList(task.getTaskList());
-
-        return newTask;
-
+        return Task.builder()
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .dueTime(calculateNewDueTime(task))
+                .priority(task.getPriority())
+                .isRecurring(task.isRecurring())
+                .recurrencePattern(task.getRecurrencePattern())
+                .taskList(task.getTaskList())
+                .build();
     }
 
     private @FutureOrPresent(message = "Due date cannot be in the past.") LocalDateTime

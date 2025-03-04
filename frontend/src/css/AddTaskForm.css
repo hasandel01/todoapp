@@ -1,3 +1,4 @@
+  /* FORM TITLE */   
   .form-title {
     background: var(--item-color);
     padding: 5px;
@@ -7,13 +8,12 @@
   }
   
   .form-title input {
-    width: 90%;
+    width:100%;
     background-color: var(--item-color);
     color: var(--text-color);
     padding: 5px;
     margin: 5px 0;
     border: none;
-    border-radius: 5px;
   }
 
   .form-title input::placeholder {
@@ -24,13 +24,48 @@
     outline: none;
   }
 
+  /* *********************** OTHER INPUTS ************************** */ 
+
+  /* MENU CONTAINER */
+
+  .selection-container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .selection-menu {
+    position: absolute;
+    top: 100%; 
+    background-color: var(--item-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 150px;
+    z-index: 10;
+  }
+
+  .selection-menu {
+    list-style: none;
+    margin: 0;
+  }
+  
+  .selection-menu li {
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .selection-menu li:hover {
+    background-color: var(--item-color-hover);
+  }
+  
   .additional-details {
     display: flex;
     flex-direction: row;
     margin-right: 10px;
   }
 
-  .add-task-details-button {
+  .menu-button {
     width: 30px; 
     height: 30px;
     margin-right: 5px;
@@ -45,37 +80,8 @@
     color: var(--secondary-color);
   }
 
-  .priority-container {
-    display: flex;
-    flex-direction: row;
-    padding: 3px;
-    align-items: center;
-  }
-
-  .repeat-task-container {
-    display: flex;
-    flex-direction: row;
-    padding: 3px;
-    align-items: center;
-
-  }
-
-  .add-task-details-button:hover {
+  .menu-button:hover {
     background-color: var(--item-color-hover);
-  }
-  
-  .modal button {
-    width: 50%;
-    padding: 5px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  
-  .modal button[type="submit"] {
-    background: var(--primary-color);
-    color: white;
   }
   
   .disabled-btn {
@@ -91,61 +97,18 @@
 
   .calendar {
     position: absolute;
-    top: 200px; /* Adjust based on your layout */
+    top: 200px;
     left: 0;
-    z-index: 1000;
   }
-  
 
-.priority-menu {
-  position: fixed;
-  background-color: var(--background-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  width: 150px;
-  z-index: 10;
+.menu-button:active,
+.menu-button:focus {
+  transform: none;
+  outline: none;
 }
 
-.priority-menu ul {
-  list-style: none;
-  padding: 10px 0;
-  margin: 0;
-}
-
-.priority-menu li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.priority-menu li:hover {
-  background-color: var(--background-color-dark);
-}
-
-.recurring-options {
-  position: fixed;
-  background-color: var(--background-color);
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 150px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-}
-
-.recurring-options ul {
-  list-style: none;
-  margin: 0;
-  padding: 10px;
-}
-
-.recurring-options ul li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.recurring-options ul li:hover {
-  background-color: var(--background-color-dark);
-}
-
-.empty-due {
-  border: none;
+.selected-label {
+  color: var(--text-color);
+  font-size: 16px;
+  margin-right: 5px;
 }

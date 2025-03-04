@@ -2,7 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 95%;
+  width: 100%;
   background-color: var(--background-color);
   margin-bottom: 30px;
 }
@@ -40,15 +40,15 @@
   padding: 5px;
   margin: 5px 0;
   border: none;
-  border-radius: 5px;
 }
 
 .title-input:focus {
+  color: var(--text-color);
   outline: none;
   background-color: var(--background-color);
+  border-bottom: 1px solid var(--text-color);
   font-size: large;
 }
-
 
 .task-list-details h2 {
   font-size: 24px;
@@ -100,7 +100,7 @@
     align-items: center;
     padding: 10px;
     margin: 10px 0;
-    background-color: var(--background-color);
+    background-color: var(--item-color);
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -224,3 +224,8 @@ input[type="checkbox"]:checked + label::before {
   font-size: 14px;
   color: white;
 }
+
+.empty-due {
+  border: none;
+}
+

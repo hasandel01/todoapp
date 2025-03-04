@@ -36,20 +36,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
     validate: (values) => {
       const errors: any = {};
 
-      // Title validation
       if (!values.title) errors.title = "Title is required";
-
-      // Description validation
-      if (!values.description) errors.description = "Description is required";
-
-      // Due time validation
-      if (!values.dueTime) errors.dueTime = "Due time is required";
-
-      // Priority validation
-      if (!values.priority) errors.priority = "Priority is required";
-      else if (!["LOW", "MEDIUM", "HIGH"].includes(values.priority)) {
-        errors.priority = "Invalid priority";
-      }
 
       // Recurrence pattern validation
       if (values.isRecurring) {

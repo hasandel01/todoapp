@@ -33,12 +33,13 @@ class TaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        task = new Task();
-        task.setId(1L);
-        task.setTitle("Test title");
-        task.setDescription("Test description");
-        task.setCompleted(true);
-        task.setPriority(Priority.MEDIUM);
+        task = Task.builder()
+                .id(1L)
+                .title("Test Title")
+                        .description("Test Description")
+                                .completed(true)
+                                        .priority(Priority.MEDIUM)
+                                                .build();
 
         // Initialize Task and TaskList
         taskList = new TaskList(); // Create a TaskList object

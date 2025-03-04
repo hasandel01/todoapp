@@ -16,6 +16,9 @@ import java.util.List;
 @Data
 @Entity
 @EqualsAndHashCode(exclude = "taskList")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
 
     @Setter
@@ -29,13 +32,11 @@ public class Task {
 
     private String description;
 
-    @FutureOrPresent(message = "Due date cannot be in the past.")
     private LocalDateTime dueTime;
 
     private boolean completed;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Priority priority;
 
     private boolean isRecurring;

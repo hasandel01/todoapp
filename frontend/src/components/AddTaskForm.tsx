@@ -8,6 +8,8 @@ import '../css/AddTaskForm.css';
 import axiosInstance from '../axios/axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faExclamationCircle, faSync } from '@fortawesome/free-solid-svg-icons';
+import { FormatDate } from '../tools/FormatDate';
+import CustomInput from './CustomInput';
 
 interface Task {
   id: number;
@@ -33,9 +35,9 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
     description: '',
     dueTime: '',
     completed: false,
-    priority: 'LOW',
+    priority: 'NONE',
     recurring: false,
-    recurrencePattern: 'DAILY'
+    recurrencePattern: 'NONE'
   });
   const [showAddTaskForm, setShowAddTaskForm] = useState(false);
   const [showPriorityMenu, setShowPriorityMenu] = useState(false);
@@ -76,6 +78,15 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
       newTask.completed = false;
       const response = await axiosInstance.post(`/task-list/${taskListId}/task`, newTask);
       onHandleAddTask(response.data);
+      setNewTask({
+        title: '',
+        description: '',
+        dueTime: '',
+        completed: false,
+        priority: 'NONE',
+        recurring: false,
+        recurrencePattern: 'DAILY',
+      });
       setMessage('Task added successfully!');
     } catch (error) {
       setMessage('Failed to add task.');
@@ -90,9 +101,9 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
       if (
         !(event.target as Element).closest('.add-task-container') &&
         !(event.target as Element).closest('.MuiDialog-root') &&
-        !(event.target as Element).closest('.priority-menu') &&
-        !(event.target as Element).closest('.recurring-options')
-      ) {
+        !(event.target as Element).closest('.selection-menu') &&
+        !(event.target as Element).closest('.react-datepicker') )
+      {
         setShowAddTaskForm(false);
         setShowPriorityMenu(false);  
         setShowRecurringMenu(false);
@@ -101,7 +112,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
 
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, []);  // single useEffect for handling clicks outside
+  }, []);   
 
   const handlePriorityChange = (priority: string) => {
     setNewTask({
@@ -113,13 +124,20 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
   };
 
   const handleRecurringChange = (recurrencePattern: string) => {
-    setNewTask({
-      ...newTask,
+
+    const updatedDueTime = selectedDate ? selectedDate.toISOString() : new Date().toISOString();
+  
+    setNewTask(prevTask => ({
+      ...prevTask,
+      dueTime: updatedDueTime,
       recurring: true,
       recurrencePattern: recurrencePattern,
-    });
+    }));
+  
     setShowRecurringMenu(false);
   };
+  
+  
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -127,6 +145,13 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
     if (date) {
       setNewTask({ ...newTask, dueTime: date.toISOString() });
     }
+  };
+
+  const handleDateClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setShowCalendar(!showCalendar);
+    setShowPriorityMenu(false);
+    setShowRecurringMenu(false);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -139,11 +164,15 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
   const handlePriorityClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     setShowPriorityMenu(!showPriorityMenu); 
+    setShowRecurringMenu(false);
+    setShowCalendar(false);
   }
 
   const handleRecurringClick = (event: React.MouseEvent) => {
     event.stopPropagation(); 
     setShowRecurringMenu(!showRecurringMenu);
+    setShowPriorityMenu(false);
+    setShowCalendar(false);
   };
 
   return (
@@ -170,7 +199,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
             />
             <div className="additional-details">
               <div className="due-time-container">
-                <button className="add-task-details-button" onClick={() => setShowCalendar(!showCalendar)}>
+                <button className="menu-button" onClick={handleDateClick}>
                 <FontAwesomeIcon icon={faCalendarAlt} />
                 </button>
                 {showCalendar && (
@@ -179,23 +208,35 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
                   onChange={handleDateChange}
                   minDate={new Date()}
                   popperPlacement="bottom-start"
-                />                                           
-                  )}      
+                  open={true} 
+                  customInput={<CustomInput />}
+                  showTimeSelect
+                  timeFormat="HH:mm"
+                  timeIntervals={15}
+                  timeCaption="Time"
+                  dateFormat="MMMM d, yyyy h:mm aa"
+                  />                                 
+                  )}
+                  {newTask.dueTime && (
+                  <div className="selected-label">
+                    {FormatDate(newTask.dueTime)} 
+                  </div>
+                )}     
               </div>   
-              <div className="priority-container">
-                <div className="add-task-details-button" onClick={handlePriorityClick}>
+              <div className="selection-container">
+                <div className="menu-button" onClick={handlePriorityClick}>
                   <FontAwesomeIcon
                     icon={faExclamationCircle}
                     title="Set Priority"
                   />
                 </div>
-                {priorityChange && (
-                  <div className="priority">
-                    <div>{newTask.priority} priority</div>
+                {newTask.priority !== 'NONE' && (
+                  <div className="selected-label">
+                    <div>{newTask.priority} priority </div>
                   </div>
                 )}
                 {showPriorityMenu && (
-                  <div className="priority-menu">
+                  <div className="selection-menu">
                     <ul>
                       <li onClick={() => handlePriorityChange('LOW')}>Low</li>
                       <li onClick={() => handlePriorityChange('MEDIUM')}>Medium</li>
@@ -204,20 +245,20 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ taskListId, onHandleAddTask }
                   </div>
                 )}
               </div>
-              <div className="repeat-task-container">
-                <div className="add-task-details-button" onClick={handleRecurringClick}>
+              <div className="selection-container">
+                <div className="menu-button" onClick={handleRecurringClick}>
                   <FontAwesomeIcon
                     icon={faSync}
                     title="Set a Repeated Task"
                   />
                 </div>
                 {newTask.recurring && (
-                  <div className="recurring-task">
+                  <div className="selected-label">
                     <div>Repeats {newTask.recurrencePattern.toLowerCase()}</div>
                   </div>
                 )}
                 {showRecurringMenu && (
-                  <div className="recurring-options">
+                  <div className="selection-menu">
                     <ul>
                       <li onClick={() => handleRecurringChange('DAILY')}>Daily</li>
                       <li onClick={() => handleRecurringChange('WEEKLY')}>Weekly</li>

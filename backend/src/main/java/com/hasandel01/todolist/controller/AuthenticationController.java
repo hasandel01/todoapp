@@ -59,8 +59,8 @@ public class AuthenticationController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AuthenticationResponse> update(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(AuthenticationResponse.builder().build());
+    public ResponseEntity<UserDTO> update(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(authenticationService.update(userDTO));
     }
 
     @PostMapping("/forgot-password")
@@ -73,5 +73,4 @@ public class AuthenticationController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }

@@ -45,12 +45,13 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        task = new Task();
-        task.setId(1L);
-        task.setTitle("Test title");
-        task.setDescription("Test description");
-        task.setCompleted(true);
-        task.setPriority(Priority.MEDIUM);
+        task = Task.builder()
+                .id(1L)
+                .title("Test Title")
+                .description("Test Description")
+                .completed(true)
+                .priority(Priority.MEDIUM)
+                .build();
 
     }
 
@@ -122,12 +123,13 @@ class TaskControllerTest {
     @Test
     void updateTask_ShouldReturnTrue() throws Exception {
 
-        Task updatedTask = new Task();
-        updatedTask.setId(1L);
-        updatedTask.setTitle("Test updated");
-        updatedTask.setDescription("Test updated");
-        updatedTask.setCompleted(true);
-        updatedTask.setPriority(Priority.MEDIUM);
+        Task updatedTask =         task = Task.builder()
+                .id(1L)
+                .title("Test Title")
+                .description("Test Description")
+                .completed(true)
+                .priority(Priority.MEDIUM)
+                .build();
 
         when(taskService.updateATask(1L,task)).thenReturn(updatedTask);
 

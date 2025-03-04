@@ -4,12 +4,14 @@ package com.hasandel01.todolist.service;
 import com.hasandel01.todolist.auth.model.AuthenticationRequest;
 import com.hasandel01.todolist.auth.model.AuthenticationResponse;
 import com.hasandel01.todolist.auth.model.RegisterRequest;
+import com.hasandel01.todolist.dto.UserDTO;
 import com.hasandel01.todolist.model.Role;
 import com.hasandel01.todolist.model.User;
 import com.hasandel01.todolist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -65,5 +67,22 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
 
         return AuthenticationResponse.builder().token(jwtToken).build();
+    }
+
+    public UserDTO update(UserDTO userDTO) {
+
+        User user = userRepository.findByUsername(userDTO.username()).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+
+        user.setEmail(userDTO.email());
+        user.setUsername(userDTO.username());
+        user.setProfilePictureUrl(userDTO.profilePictureUrl());
+        userRepository.save(user);
+        return UserDTO.builder()
+                .username(userDTO.username())
+                .email(userDTO.email())
+                .profilePictureUrl(userDTO.profilePictureUrl())
+                .build();
     }
 }
